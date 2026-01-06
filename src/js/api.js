@@ -3,7 +3,7 @@
 // =====================
 
 const API_CONFIG = {
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'https://whizwizard-backend.onrender.com/api',
     timeout: 10000
 };
 
