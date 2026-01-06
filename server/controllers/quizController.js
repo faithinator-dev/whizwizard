@@ -9,22 +9,32 @@ exports.getQuizzes = async (req, res) => {
     try {
         const { category, search } = req.query;
         
-        let query = {};
+        let filters = {};
         
         if (category && category !== 'all') {
-            query.category = category;
-        }
-        
-        if (search) {
-            query.$or = [
-                { title: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } }
-            ];
+            filters.category = category;
         }
 
-        const quizzes = await Quiz.find(query)
-            .populate('createdBy', 'name email')
-            .sort({ createdAt: -1 });
+        let quizzes = await Quiz.find(filters);
+
+        // Client-side filtering for search (Firestore doesn't support regex)
+        if (search) {
+            const searchLower = search.toLowerCase();
+            quizzes = quizzes.filter(quiz => 
+                quiz.title.toLowerCase().includes(searchLower) ||
+                quiz.description.toLowerCase().includes(searchLower)
+            );
+        }
+
+        // Populate creator info
+        for (let quiz of quizzes) {
+            const creator = await User.findById(quiz.createdBy);
+            quiz.createdBy = creator ? { 
+                id: creator.id,
+                name: creator.name, 
+                email: creator.email 
+            } : null;
+        }
 
         res.json({
             success: true,
@@ -45,14 +55,23 @@ exports.getQuizzes = async (req, res) => {
 // @access  Public
 exports.getQuiz = async (req, res) => {
     try {
-        const quiz = await Quiz.findById(req.params.id)
-            .populate('createdBy', 'name email');
+        const quiz = await Quiz.findById(req.params.id);
 
         if (!quiz) {
             return res.status(404).json({
                 success: false,
                 message: 'Quiz not found'
             });
+        }
+
+        // Populate creator info
+        const creator = await User.findById(quiz.createdBy);
+        if (creator) {
+            quiz.createdBy = {
+                id: creator.id,
+                name: creator.name,
+                email: creator.email
+            };
         }
 
         res.json({
@@ -83,15 +102,27 @@ exports.createQuiz = async (req, res) => {
     try {
         const quizData = {
             ...req.body,
-            createdBy: req.user._id
+            createdBy: req.user.id
         };
 
-        const quiz = await Quiz.create(quizData);
+        // Validate quiz data
+        const validationErrors = Quiz.validate(quizData);
+        if (validationErrors.length > 0) {
+            return res.status(400).json({
+                success: false,
+                errors: validationErrors.map(err => ({ msg: err }))
+            });
+        }
+
+        const quiz = new Quiz(quizData);
+        await quiz.save();
 
         // Update user's quiz count
-        await User.findByIdAndUpdate(req.user._id, {
-            $inc: { quizzesCreated: 1 }
-        });
+        const user = await User.findById(req.user.id);
+        if (user) {
+            user.quizzesCreated += 1;
+            await user.save();
+        }
 
         res.status(201).json({
             success: true,
@@ -111,7 +142,7 @@ exports.createQuiz = async (req, res) => {
 // @access  Private
 exports.updateQuiz = async (req, res) => {
     try {
-        let quiz = await Quiz.findById(req.params.id);
+        const quiz = await Quiz.findById(req.params.id);
 
         if (!quiz) {
             return res.status(404).json({
@@ -121,18 +152,16 @@ exports.updateQuiz = async (req, res) => {
         }
 
         // Check ownership
-        if (quiz.createdBy.toString() !== req.user._id.toString()) {
+        if (quiz.createdBy !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: 'Not authorized to update this quiz'
             });
         }
 
-        quiz = await Quiz.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true, runValidators: true }
-        );
+        // Update quiz fields
+        Object.assign(quiz, req.body);
+        await quiz.save();
 
         res.json({
             success: true,
@@ -162,19 +191,21 @@ exports.deleteQuiz = async (req, res) => {
         }
 
         // Check ownership
-        if (quiz.createdBy.toString() !== req.user._id.toString()) {
+        if (quiz.createdBy !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: 'Not authorized to delete this quiz'
             });
         }
 
-        await quiz.deleteOne();
+        await Quiz.deleteById(req.params.id);
 
         // Update user's quiz count
-        await User.findByIdAndUpdate(req.user._id, {
-            $inc: { quizzesCreated: -1 }
-        });
+        const user = await User.findById(req.user.id);
+        if (user) {
+            user.quizzesCreated = Math.max(0, user.quizzesCreated - 1);
+            await user.save();
+        }
 
         res.json({
             success: true,
@@ -194,8 +225,7 @@ exports.deleteQuiz = async (req, res) => {
 // @access  Private
 exports.getMyQuizzes = async (req, res) => {
     try {
-        const quizzes = await Quiz.find({ createdBy: req.user._id })
-            .sort({ createdAt: -1 });
+        const quizzes = await Quiz.findByCreator(req.user.id);
 
         res.json({
             success: true,

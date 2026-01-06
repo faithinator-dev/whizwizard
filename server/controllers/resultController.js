@@ -18,34 +18,40 @@ exports.submitResult = async (req, res) => {
             });
         }
 
-        // Create result
-        const result = await Result.create({
+        // Validate result data
+        const resultData = {
             quiz: quizId,
-            user: req.user._id,
+            user: req.user.id,
             score,
             correctAnswers,
             wrongAnswers,
             totalQuestions,
             timeTaken,
             answers
-        });
+        };
 
-        // Update quiz attempts and average score
-        const allResults = await Result.find({ quiz: quizId });
-        const averageScore = allResults.reduce((sum, r) => sum + r.score, 0) / allResults.length;
-        
-        await Quiz.findByIdAndUpdate(quizId, {
-            $inc: { attempts: 1 },
-            averageScore: Math.round(averageScore)
-        });
+        const validationErrors = Result.validate(resultData);
+        if (validationErrors.length > 0) {
+            return res.status(400).json({
+                success: false,
+                errors: validationErrors.map(err => ({ msg: err }))
+            });
+        }
+
+        // Create result
+        const result = new Result(resultData);
+        await result.save();
+
+        // Update quiz statistics
+        await quiz.updateStats(score, totalQuestions);
 
         // Update user stats
-        await User.findByIdAndUpdate(req.user._id, {
-            $inc: { 
-                quizzesCompleted: 1,
-                totalScore: score
-            }
-        });
+        const user = await User.findById(req.user.id);
+        if (user) {
+            user.quizzesCompleted += 1;
+            user.totalScore += score;
+            await user.save();
+        }
 
         res.status(201).json({
             success: true,
@@ -65,9 +71,25 @@ exports.submitResult = async (req, res) => {
 // @access  Private
 exports.getResultsByQuiz = async (req, res) => {
     try {
-        const results = await Result.find({ quiz: req.params.quizId })
-            .populate('user', 'name email')
-            .sort({ score: -1, createdAt: -1 });
+        const results = await Result.findByQuiz(req.params.quizId);
+
+        // Populate user info for each result
+        for (let result of results) {
+            const user = await User.findById(result.user);
+            if (user) {
+                result.user = {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                };
+            }
+        }
+
+        // Sort by score descending, then by creation date
+        results.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
 
         res.json({
             success: true,
@@ -88,9 +110,19 @@ exports.getResultsByQuiz = async (req, res) => {
 // @access  Private
 exports.getResultsByUser = async (req, res) => {
     try {
-        const results = await Result.find({ user: req.user._id })
-            .populate('quiz', 'title category')
-            .sort({ createdAt: -1 });
+        const results = await Result.findByUser(req.user.id);
+
+        // Populate quiz info for each result
+        for (let result of results) {
+            const quiz = await Quiz.findById(result.quiz);
+            if (quiz) {
+                result.quiz = {
+                    id: quiz.id,
+                    title: quiz.title,
+                    category: quiz.category
+                };
+            }
+        }
 
         res.json({
             success: true,
@@ -111,10 +143,19 @@ exports.getResultsByUser = async (req, res) => {
 // @access  Public
 exports.getLeaderboard = async (req, res) => {
     try {
-        const leaderboard = await User.find()
-            .select('name email totalScore quizzesCompleted')
-            .sort({ totalScore: -1 })
-            .limit(50);
+        const users = await User.findAll();
+
+        // Sort by total score descending
+        const leaderboard = users
+            .map(user => ({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                totalScore: user.totalScore,
+                quizzesCompleted: user.quizzesCompleted
+            }))
+            .sort((a, b) => b.totalScore - a.totalScore)
+            .slice(0, 50);
 
         res.json({
             success: true,

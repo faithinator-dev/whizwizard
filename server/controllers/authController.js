@@ -1,13 +1,6 @@
 const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
+const { getAuth } = require('../config/database');
 const User = require('../models/User');
-
-// Generate JWT token
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-};
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -24,8 +17,17 @@ exports.register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        // Validate user data
+        const validationErrors = User.validate({ name, email, password });
+        if (validationErrors.length > 0) {
+            return res.status(400).json({
+                success: false,
+                errors: validationErrors.map(err => ({ msg: err }))
+            });
+        }
+
         // Check if user exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({
                 success: false,
@@ -33,15 +35,28 @@ exports.register = async (req, res) => {
             });
         }
 
-        // Create user
-        const user = await User.create({
-            name,
-            email,
-            password
+        // Hash password
+        const hashedPassword = await User.hashPassword(password);
+
+        // Create user in Firestore
+        const user = new User({
+            name: name.trim(),
+            email: email.toLowerCase().trim(),
+            password: hashedPassword
+        });
+        await user.save();
+
+        // Create Firebase Auth user
+        const auth = getAuth();
+        const firebaseUser = await auth.createUser({
+            uid: user.id,
+            email: email.toLowerCase().trim(),
+            password: password,
+            displayName: name.trim()
         });
 
-        // Generate token
-        const token = generateToken(user._id);
+        // Generate custom token
+        const token = await auth.createCustomToken(firebaseUser.uid);
 
         res.status(201).json({
             success: true,
@@ -73,7 +88,7 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
 
         // Check for user
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User.findByEmail(email);
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -82,7 +97,7 @@ exports.login = async (req, res) => {
         }
 
         // Check password
-        const isMatch = await user.comparePassword(password);
+        const isMatch = await User.comparePassword(password, user.password);
         if (!isMatch) {
             return res.status(401).json({
                 success: false,
@@ -90,8 +105,9 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Generate token
-        const token = generateToken(user._id);
+        // Generate custom token
+        const auth = getAuth();
+        const token = await auth.createCustomToken(user.id);
 
         res.json({
             success: true,
@@ -140,12 +156,20 @@ exports.updateProfile = async (req, res) => {
     try {
         const { name, avatar } = req.body;
 
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user.id);
 
-        if (name) user.name = name;
+        if (name) user.name = name.trim();
         if (avatar !== undefined) user.avatar = avatar;
 
         await user.save();
+
+        // Update Firebase Auth display name
+        if (name) {
+            const auth = getAuth();
+            await auth.updateUser(user.id, {
+                displayName: name.trim()
+            });
+        }
 
         res.json({
             success: true,

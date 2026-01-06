@@ -1,15 +1,6 @@
 const LiveRoom = require('../models/LiveRoom');
 const Quiz = require('../models/Quiz');
-
-// Generate random 6-character code
-const generateCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return code;
-};
+const User = require('../models/User');
 
 // @desc    Create live room
 // @route   POST /api/live-rooms
@@ -27,7 +18,7 @@ exports.createRoom = async (req, res) => {
             });
         }
 
-        if (quiz.createdBy.toString() !== req.user._id.toString()) {
+        if (quiz.createdBy !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: 'Not authorized to create room for this quiz'
@@ -38,24 +29,39 @@ exports.createRoom = async (req, res) => {
         let code;
         let codeExists = true;
         while (codeExists) {
-            code = generateCode();
-            const existing = await LiveRoom.findOne({ code });
+            code = LiveRoom.generateCode();
+            const existing = await LiveRoom.findByCode(code);
             if (!existing) codeExists = false;
         }
 
         // Create room
-        const room = await LiveRoom.create({
+        const room = new LiveRoom({
             code,
             quiz: quizId,
-            host: req.user._id,
+            host: req.user.id,
             players: [],
             currentQuestion: -1,
             answers: {}
         });
+        await room.save();
 
-        const populatedRoom = await LiveRoom.findById(room._id)
-            .populate('quiz', 'title description category questions')
-            .populate('host', 'name email');
+        // Populate quiz and host data
+        const host = await User.findById(room.host);
+        const populatedRoom = {
+            ...room,
+            quiz: {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description,
+                category: quiz.category,
+                questions: quiz.questions
+            },
+            host: host ? {
+                id: host.id,
+                name: host.name,
+                email: host.email
+            } : null
+        };
 
         res.status(201).json({
             success: true,
@@ -77,7 +83,7 @@ exports.joinRoom = async (req, res) => {
     try {
         const { code } = req.params;
 
-        const room = await LiveRoom.findOne({ code: code.toUpperCase() });
+        const room = await LiveRoom.findByCode(code.toUpperCase());
 
         if (!room) {
             return res.status(404).json({
@@ -95,7 +101,7 @@ exports.joinRoom = async (req, res) => {
 
         // Check if already joined
         const alreadyJoined = room.players.some(
-            p => p.userId.toString() === req.user._id.toString()
+            p => p.userId === req.user.id
         );
 
         if (alreadyJoined) {
@@ -106,17 +112,32 @@ exports.joinRoom = async (req, res) => {
         }
 
         // Add player
-        room.players.push({
-            userId: req.user._id,
-            name: req.user.name,
-            points: 0
+        room.addPlayer({
+            userId: req.user.id,
+            name: req.user.name
         });
 
         await room.save();
 
-        const populatedRoom = await LiveRoom.findById(room._id)
-            .populate('quiz', 'title description category questions')
-            .populate('host', 'name email');
+        // Populate quiz and host data
+        const quiz = await Quiz.findById(room.quiz);
+        const host = await User.findById(room.host);
+        
+        const populatedRoom = {
+            ...room,
+            quiz: quiz ? {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description,
+                category: quiz.category,
+                questions: quiz.questions
+            } : null,
+            host: host ? {
+                id: host.id,
+                name: host.name,
+                email: host.email
+            } : null
+        };
 
         res.json({
             success: true,
@@ -136,9 +157,7 @@ exports.joinRoom = async (req, res) => {
 // @access  Private
 exports.getRoom = async (req, res) => {
     try {
-        const room = await LiveRoom.findById(req.params.id)
-            .populate('quiz', 'title description category questions')
-            .populate('host', 'name email');
+        const room = await LiveRoom.findById(req.params.id);
 
         if (!room) {
             return res.status(404).json({
@@ -147,9 +166,29 @@ exports.getRoom = async (req, res) => {
             });
         }
 
+        // Populate quiz and host data
+        const quiz = await Quiz.findById(room.quiz);
+        const host = await User.findById(room.host);
+        
+        const populatedRoom = {
+            ...room,
+            quiz: quiz ? {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description,
+                category: quiz.category,
+                questions: quiz.questions
+            } : null,
+            host: host ? {
+                id: host.id,
+                name: host.name,
+                email: host.email
+            } : null
+        };
+
         res.json({
             success: true,
-            room
+            room: populatedRoom
         });
     } catch (error) {
         console.error('Get room error:', error);
@@ -175,7 +214,7 @@ exports.startQuiz = async (req, res) => {
         }
 
         // Verify host
-        if (room.host.toString() !== req.user._id.toString()) {
+        if (room.host !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: 'Only the host can start the quiz'
@@ -202,9 +241,25 @@ exports.startQuiz = async (req, res) => {
 
         await room.save();
 
-        const populatedRoom = await LiveRoom.findById(room._id)
-            .populate('quiz', 'title description category questions')
-            .populate('host', 'name email');
+        // Populate quiz and host data
+        const quiz = await Quiz.findById(room.quiz);
+        const host = await User.findById(room.host);
+        
+        const populatedRoom = {
+            ...room,
+            quiz: quiz ? {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description,
+                category: quiz.category,
+                questions: quiz.questions
+            } : null,
+            host: host ? {
+                id: host.id,
+                name: host.name,
+                email: host.email
+            } : null
+        };
 
         res.json({
             success: true,
@@ -226,7 +281,8 @@ exports.submitAnswer = async (req, res) => {
     try {
         const { questionIndex, answerIndex, timeTaken } = req.body;
 
-        const room = await LiveRoom.findById(req.params.id).populate('quiz');
+        const room = await LiveRoom.findById(req.params.id);
+        const quiz = await Quiz.findById(room.quiz);
 
         if (!room) {
             return res.status(404).json({
@@ -244,7 +300,7 @@ exports.submitAnswer = async (req, res) => {
 
         // Get player
         const player = room.players.find(
-            p => p.userId.toString() === req.user._id.toString()
+            p => p.userId === req.user.id
         );
 
         if (!player) {
@@ -255,7 +311,7 @@ exports.submitAnswer = async (req, res) => {
         }
 
         // Get question
-        const question = room.quiz.questions[questionIndex];
+        const question = quiz.questions[questionIndex];
         const isCorrect = answerIndex === question.correctAnswer;
 
         // Calculate points (1000 base + speed bonus)
@@ -263,31 +319,30 @@ exports.submitAnswer = async (req, res) => {
         if (isCorrect) {
             const LIVE_TIMER = 12;
             points = 1000 + Math.max(0, (LIVE_TIMER - timeTaken) * 50);
-            player.points += points;
+            room.updatePlayerPoints(req.user.id, points);
         }
 
         // Store answer
         const questionKey = questionIndex.toString();
-        if (!room.answers.has(questionKey)) {
-            room.answers.set(questionKey, []);
+        if (!room.answers[questionKey]) {
+            room.answers[questionKey] = [];
         }
 
-        const answers = room.answers.get(questionKey);
+        const answers = room.answers[questionKey];
         
         // Check if already answered
         const alreadyAnswered = answers.some(
-            a => a.playerId.toString() === req.user._id.toString()
+            a => a.playerId === req.user.id
         );
 
         if (!alreadyAnswered) {
-            answers.push({
-                playerId: req.user._id,
+            room.recordAnswer(questionIndex, {
+                playerId: req.user.id,
                 answerIndex,
                 timeTaken,
                 isCorrect,
                 points
             });
-            room.answers.set(questionKey, answers);
         }
 
         await room.save();
@@ -312,7 +367,8 @@ exports.submitAnswer = async (req, res) => {
 // @access  Private (Host only)
 exports.nextQuestion = async (req, res) => {
     try {
-        const room = await LiveRoom.findById(req.params.id).populate('quiz');
+        const room = await LiveRoom.findById(req.params.id);
+        const quiz = await Quiz.findById(room.quiz);
 
         if (!room) {
             return res.status(404).json({
@@ -322,7 +378,7 @@ exports.nextQuestion = async (req, res) => {
         }
 
         // Verify host
-        if (room.host.toString() !== req.user._id.toString()) {
+        if (room.host !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: 'Only the host can advance questions'
@@ -337,7 +393,7 @@ exports.nextQuestion = async (req, res) => {
         }
 
         // Check if there are more questions
-        if (room.currentQuestion >= room.quiz.questions.length - 1) {
+        if (room.currentQuestion >= quiz.questions.length - 1) {
             room.status = 'finished';
             room.finishedAt = new Date();
         } else {
@@ -346,9 +402,24 @@ exports.nextQuestion = async (req, res) => {
 
         await room.save();
 
-        const populatedRoom = await LiveRoom.findById(room._id)
-            .populate('quiz', 'title description category questions')
-            .populate('host', 'name email');
+        // Populate quiz and host data
+        const host = await User.findById(room.host);
+        
+        const populatedRoom = {
+            ...room,
+            quiz: quiz ? {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description,
+                category: quiz.category,
+                questions: quiz.questions
+            } : null,
+            host: host ? {
+                id: host.id,
+                name: host.name,
+                email: host.email
+            } : null
+        };
 
         res.json({
             success: true,
@@ -380,15 +451,9 @@ exports.getLeaderboard = async (req, res) => {
         }
 
         // Get leaderboard
-        let leaderboard = room.players
-            .map(p => ({
-                id: p.userId,
-                name: p.name,
-                points: p.points
-            }))
-            .sort((a, b) => b.points - a.points);
+        let leaderboard = room.getLeaderboard();
 
-        // Limit to top 10 if specified
+        // Limit to top 10 if question-specific
         if (questionIndex !== undefined) {
             leaderboard = leaderboard.slice(0, 10);
         }
@@ -421,14 +486,14 @@ exports.deleteRoom = async (req, res) => {
         }
 
         // Verify host
-        if (room.host.toString() !== req.user._id.toString()) {
+        if (room.host !== req.user.id) {
             return res.status(403).json({
                 success: false,
                 message: 'Only the host can delete the room'
             });
         }
 
-        await room.deleteOne();
+        await LiveRoom.deleteById(req.params.id);
 
         res.json({
             success: true,
