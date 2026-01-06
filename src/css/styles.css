@@ -258,6 +258,30 @@ body {
     transform: translateY(-2px);
 }
 
+.btn-google {
+    background-color: #ffffff;
+    color: #1f1f1f;
+    border: 2px solid var(--accent-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    font-weight: 600;
+}
+
+.btn-google:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-cyan);
+}
+
+.btn-google .btn-icon {
+    filter: none;
+    width: 18px;
+    height: 18px;
+}
+
 .btn-danger {
     background-color: var(--danger-color);
     color: var(--text-primary);
