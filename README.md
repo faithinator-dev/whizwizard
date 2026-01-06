@@ -1,6 +1,6 @@
 # WhizWizard - Live Quiz Hosting Platform
 
-A fully functional multiplayer quiz hosting platform with **real MongoDB database**, Node.js/Express backend, and modern frontend. Features JWT authentication, Kahoot-style live quiz functionality with real-time leaderboards, and a beautiful navy blue theme with smooth animations.
+A fully functional multiplayer quiz hosting platform with **Firebase/Firestore database**, Node.js/Express backend, and modern frontend. Features Firebase authentication, Kahoot-style live quiz functionality with real-time leaderboards, and a beautiful navy blue theme with smooth animations.
 
 ## Features
 
