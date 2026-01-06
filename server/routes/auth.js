@@ -5,7 +5,8 @@ const {
     register,
     login,
     getMe,
-    updateProfile
+    updateProfile,
+    googleSignIn
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
@@ -20,6 +21,8 @@ router.post('/login', [
     body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
     body('password').notEmpty().withMessage('Password is required')
 ], login);
+
+router.post('/google', googleSignIn);
 
 // Protected routes
 router.get('/me', protect, getMe);

@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Setup form submission
     document.getElementById('login-form').addEventListener('submit', handleLogin);
+    
+    // Setup Google Sign-In
+    const googleBtn = document.getElementById('google-signin-btn');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', handleGoogleSignIn);
+    }
 });
 
 function handleLogin(e) {
@@ -43,6 +49,55 @@ function handleLogin(e) {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Login';
         });
+}
+
+async function handleGoogleSignIn() {
+    const googleBtn = document.getElementById('google-signin-btn');
+    googleBtn.disabled = true;
+    googleBtn.textContent = 'Connecting to Google...';
+
+    try {
+        if (typeof firebase === 'undefined' || !window.googleProvider) {
+            throw new Error('Firebase not initialized. Please refresh the page.');
+        }
+
+        // Sign in with Google popup
+        const result = await window.firebaseAuth.signInWithPopup(window.googleProvider);
+        const user = result.user;
+        const idToken = await user.getIdToken();
+
+        // Send token to backend
+        const response = await fetch(`${API_CONFIG.baseURL}/auth/google`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idToken: idToken,
+                email: user.email,
+                name: user.displayName,
+                photoURL: user.photoURL
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('currentUser', JSON.stringify(data.user));
+            localStorage.setItem('authToken', data.token);
+            QuizUtils.showNotification('Login successful!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        } else {
+            throw new Error(data.message || 'Google sign-in failed');
+        }
+    } catch (error) {
+        console.error('Google sign-in error:', error);
+        QuizUtils.showNotification(error.message || 'Google sign-in failed. Please try again.', 'error');
+        googleBtn.disabled = false;
+        googleBtn.textContent = 'Continue with Google';
+    }
 }
         setTimeout(() => {
             window.location.href = 'index.html';

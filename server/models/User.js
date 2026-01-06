@@ -8,6 +8,7 @@ class User {
         this.email = data.email;
         this.password = data.password;
         this.avatar = data.avatar || null;
+        this.authProvider = data.authProvider || 'email'; // 'email' or 'google'
         this.totalScore = data.totalScore || 0;
         this.quizzesCompleted = data.quizzesCompleted || 0;
         this.quizzesCreated = data.quizzesCreated || 0;
@@ -28,7 +29,8 @@ class User {
         if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) {
             errors.push('Please provide a valid email');
         }
-        if (!data.password || data.password.length < 6) {
+        // Only validate password for email auth
+        if (data.authProvider !== 'google' && (!data.password || data.password.length < 6)) {
             errors.push('Password must be at least 6 characters');
         }
 

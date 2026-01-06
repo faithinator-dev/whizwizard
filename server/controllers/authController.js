@@ -141,6 +141,82 @@ exports.getMe = async (req, res) => {
     }
 };
 
+// @desc    Google Sign-In
+// @route   POST /api/auth/google
+// @access  Public
+exports.googleSignIn = async (req, res) => {
+    try {
+        const { idToken, name, email, photoURL } = req.body;
+
+        if (!idToken) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID token is required'
+            });
+        }
+
+        const auth = getAuth();
+
+        // Verify the ID token
+        let decodedToken;
+        try {
+            decodedToken = await auth.verifyIdToken(idToken);
+        } catch (error) {
+            console.error('Token verification error:', error);
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid ID token'
+            });
+        }
+
+        const uid = decodedToken.uid;
+        const userEmail = email || decodedToken.email;
+
+        // Check if user exists in Firestore
+        let user = await User.findByEmail(userEmail);
+
+        if (!user) {
+            // Create new user
+            user = new User({
+                name: name || decodedToken.name || 'User',
+                email: userEmail,
+                password: null, // Google users don't have password
+                avatar: photoURL || decodedToken.picture || null,
+                authProvider: 'google'
+            });
+            
+            // Set the ID to match Firebase Auth UID
+            user.id = uid;
+            await user.save();
+
+            // Update Firebase Auth user if needed
+            try {
+                await auth.updateUser(uid, {
+                    displayName: user.name,
+                    photoURL: user.avatar
+                });
+            } catch (error) {
+                console.error('Error updating Firebase Auth user:', error);
+            }
+        }
+
+        // Generate custom token
+        const token = await auth.createCustomToken(user.id);
+
+        res.json({
+            success: true,
+            token,
+            user: user.getPublicProfile()
+        });
+    } catch (error) {
+        console.error('Google Sign-In error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error during Google Sign-In'
+        });
+    }
+};
+
 // @desc    Update user profile
 // @route   PUT /api/auth/profile
 // @access  Private

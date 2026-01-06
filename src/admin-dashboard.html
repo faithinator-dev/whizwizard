@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - WhizWizard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-header h1 {
+            color: var(--accent-cyan);
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--secondary-navy);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--accent-navy);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+        }
+
+        .stat-card .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive { color: var(--success-color); }
+        .stat-change.negative { color: var(--danger-color); }
+
+        .dashboard-section {
+            background: var(--secondary-navy);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--accent-navy);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .users-table thead {
+            background: var(--accent-navy);
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--accent-navy);
+        }
+
+        .users-table th {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .users-table tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        .users-table tbody tr:hover {
+            background: var(--accent-navy);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            margin-right: 0.5rem;
+        }
+
+        .btn-email {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-email:hover {
+            background: #3a7bc8;
+        }
+
+        .btn-view {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #00c45e;
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #e63946;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem;
+            border: 1px solid var(--accent-navy);
+            border-radius: 8px;
+            background: var(--primary-navy);
+            color: var(--text-primary);
+        }
+
+        .search-bar select {
+            padding: 0.75rem;
+            border: 1px solid var(--accent-navy);
+            border-radius: 8px;
+            background: var(--primary-navy);
+            color: var(--text-primary);
+        }
+
+        /* Email Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--secondary-navy);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--accent-cyan);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--accent-navy);
+            border-radius: 8px;
+            background: var(--primary-navy);
+            color: var(--text-primary);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card .stat-value {
+                font-size: 2rem;
+            }
+
+            .users-table {
+                font-size: 0.85rem;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .action-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-hat-wizard"></i>
+                WhizWizard Admin
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="my-quizzes.html">Quizzes</a>
+                <a href="#" onclick="Auth.logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>📊 Admin Dashboard</h1>
+            <button class="btn btn-primary" onclick="refreshData()">
+                🔄 Refresh Data
+            </button>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="stat-value" id="total-users">0</div>
+                <div class="stat-change positive" id="users-change">+0 this week</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Quizzes</h3>
+                <div class="stat-value" id="total-quizzes">0</div>
+                <div class="stat-change positive" id="quizzes-change">+0 this week</div>
+            </div>
+            <div class="stat-card">
+                <h3>Quiz Attempts</h3>
+                <div class="stat-value" id="total-attempts">0</div>
+                <div class="stat-change positive" id="attempts-change">+0 this week</div>
+            </div>
+            <div class="stat-card">
+                <h3>Active Today</h3>
+                <div class="stat-value" id="active-today">0</div>
+                <div class="stat-change" id="active-change">users online</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>📈 User Growth</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="userGrowthChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Users Management -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>👥 User Management</h2>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="search-users" placeholder="Search users by name or email..." onkeyup="filterUsers()">
+                <select id="filter-role" onchange="filterUsers()">
+                    <option value="all">All Users</option>
+                    <option value="admin">Admins</option>
+                    <option value="user">Regular Users</option>
+                </select>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Joined</th>
+                            <th>Quizzes Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                                Loading users...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="email-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📧 Send Email</h2>
+                <button class="close-modal" onclick="closeEmailModal()">&times;</button>
+            </div>
+            <form id="email-form" onsubmit="sendEmail(event)">
+                <div class="form-group">
+                    <label>To:</label>
+                    <input type="email" id="email-to" readonly required>
+                </div>
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" id="email-subject" placeholder="Email subject..." required>
+                </div>
+                <div class="form-group">
+                    <label>Message:</label>
+                    <textarea id="email-message" placeholder="Write your message here..." required></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Send Email</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEmailModal()" style="flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Setup form submission
     document.getElementById('signup-form').addEventListener('submit', handleSignup);
+    
+    // Setup Google Sign-In
+    document.getElementById('google-signin-btn').addEventListener('click', handleGoogleSignIn);
 });
 
 function handleSignup(e) {
@@ -54,16 +57,55 @@ function handleSignup(e) {
             console.error('Signup error:', error);
             QuizUtils.showNotification(error.message || 'Signup failed. Please try again.', 'error');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Sign Up';
+            submitBtn.textContent = 'Create Account';
         });
 }
 
-    if (result.success) {
-        QuizUtils.showNotification('Account created successfully!', 'success');
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
-    } else {
-        QuizUtils.showNotification(result.message, 'error');
+async function handleGoogleSignIn() {
+    const googleBtn = document.getElementById('google-signin-btn');
+    googleBtn.disabled = true;
+    googleBtn.textContent = 'Signing in with Google...';
+
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await firebase.auth().signInWithPopup(provider);
+        const user = result.user;
+
+        // Get ID token
+        const idToken = await user.getIdToken();
+
+        // Send to backend
+        const response = await fetch(`${API_CONFIG.baseURL}/auth/google`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idToken: idToken,
+                name: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Store token and user data
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            QuizUtils.showNotification('Signed up successfully with Google!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        } else {
+            throw new Error(data.message || 'Google Sign-In failed');
+        }
+    } catch (error) {
+        console.error('Google Sign-In error:', error);
+        QuizUtils.showNotification(error.message || 'Google Sign-In failed', 'error');
+        googleBtn.disabled = false;
+        googleBtn.textContent = 'Sign up with Google';
     }
 }
