@@ -528,3 +528,4 @@ For issues or questions, please check:
 ---
 
 **Enjoy creating and taking quizzes with WhizWizard! 🎯**
+# whizwizard
