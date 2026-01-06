@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Live Quiz - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/icons/logo.svg" alt="QuizMaster Logo" class="logo-icon">
+                <span class="logo-text">QuizMaster</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Lobby Screen -->
+        <div class="host-lobby-container" id="host-lobby">
+            <div class="host-header">
+                <h1 class="host-title">Live Quiz Lobby</h1>
+                <div class="host-code-display">
+                    <span>Join Code:</span>
+                    <div class="code-large" id="host-code">000000</div>
+                    <button class="btn btn-small btn-secondary" onclick="copyCode()">
+                        <img src="assets/icons/save.svg" alt="Copy" class="btn-icon">
+                        Copy
+                    </button>
+                </div>
+            </div>
+
+            <div class="host-quiz-info">
+                <h2 id="host-quiz-name">Quiz Name</h2>
+                <div class="host-stats">
+                    <div class="stat-item">
+                        <img src="assets/icons/question.svg" alt="Questions" class="stat-icon">
+                        <span><span id="host-question-count">0</span> Questions</span>
+                    </div>
+                    <div class="stat-item">
+                        <img src="assets/icons/timer.svg" alt="Time" class="stat-icon">
+                        <span>12s per question</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="host-players-section">
+                <h3 class="section-title">
+                    <img src="assets/icons/users.svg" alt="Players" class="section-icon">
+                    Players Joined: <span id="host-player-count">0</span>
+                </h3>
+                <div class="players-grid" id="host-players-grid">
+                    <!-- Players will be added dynamically -->
+                </div>
+            </div>
+
+            <div class="host-controls">
+                <button class="btn btn-primary btn-large" id="start-quiz-btn" disabled>
+                    <img src="assets/icons/play.svg" alt="Start" class="btn-icon">
+                    Start Quiz
+                </button>
+                <button class="btn btn-danger" onclick="cancelQuiz()">
+                    <img src="assets/icons/close.svg" alt="Cancel" class="btn-icon">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- Host Control Screen During Quiz -->
+        <div class="host-control-screen hidden" id="host-control">
+            <div class="control-header">
+                <h2>Question <span id="control-question-num">1</span>/<span id="control-total-questions">10</span></h2>
+                <div class="control-timer">
+                    <img src="assets/icons/timer.svg" alt="Timer" class="timer-icon">
+                    <span id="control-timer-text">12</span>s
+                </div>
+            </div>
+
+            <div class="control-question-display">
+                <h3 id="control-question-text">Question text</h3>
+                <div class="control-options" id="control-options">
+                    <!-- Options will be displayed -->
+                </div>
+            </div>
+
+            <div class="control-live-stats">
+                <h3>Live Responses</h3>
+                <div class="response-bars" id="response-bars">
+                    <!-- Response bars will be added dynamically -->
+                </div>
+                <p class="responses-count">
+                    <span id="responses-count">0</span>/<span id="total-players">0</span> players responded
+                </p>
+            </div>
+
+            <div class="control-actions">
+                <button class="btn btn-secondary" id="show-leaderboard-btn">
+                    <img src="assets/icons/trophy.svg" alt="Leaderboard" class="btn-icon">
+                    Show Leaderboard
+                </button>
+                <button class="btn btn-primary" id="next-question-btn">
+                    Next Question
+                    <img src="assets/icons/arrow-right.svg" alt="Next" class="btn-icon">
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/live-quiz.js"></script>
+    <script src="js/live-quiz-host.js"></script>
+</body>
+</html>

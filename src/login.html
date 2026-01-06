@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box animated-scale">
+            <div class="auth-header">
+                <img src="assets/icons/logo.svg" alt="QuizMaster Logo" class="auth-logo">
+                <h1 class="auth-title">Welcome to QuizMaster</h1>
+                <p class="auth-subtitle">Login to create and join live quizzes</p>
+            </div>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email" class="form-label">
+                        <img src="assets/icons/info.svg" alt="Email" class="label-icon">
+                        Email
+                    </label>
+                    <input type="email" id="login-email" class="form-input" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-label">
+                        <img src="assets/icons/info.svg" alt="Password" class="label-icon">
+                        Password
+                    </label>
+                    <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <img src="assets/icons/checkmark.svg" alt="Login" class="btn-icon">
+                    Login
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <div class="auth-switch">
+                <p>Don't have an account?</p>
+                <a href="signup.html" class="btn btn-secondary btn-full">
+                    <img src="assets/icons/plus.svg" alt="Sign Up" class="btn-icon">
+                    Create Account
+                </a>
+            </div>
+        </div>
+
+        <div class="auth-character">
+            <img src="assets/characters/welcome-character.svg" alt="Character" class="character-img animated-float">
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

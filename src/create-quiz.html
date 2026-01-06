@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/icons/logo.svg" alt="QuizMaster Logo" class="logo-icon">
+                <span class="logo-text">QuizMaster</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <img src="assets/icons/home.svg" alt="Home" class="nav-icon">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="create-quiz.html" class="nav-link active">
+                        <img src="assets/icons/create.svg" alt="Create" class="nav-icon">
+                        Create Quiz
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="my-quizzes.html" class="nav-link">
+                        <img src="assets/icons/quiz.svg" alt="Quizzes" class="nav-icon">
+                        My Quizzes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="leaderboard.html" class="nav-link">
+                        <img src="assets/icons/trophy.svg" alt="Leaderboard" class="nav-icon">
+                        Leaderboard
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-auth" id="nav-auth">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="create-quiz-container">
+            <div class="page-header">
+                <h1 class="page-title">Create New Quiz</h1>
+                <p class="page-subtitle">Fill in the details to create your quiz</p>
+            </div>
+
+            <form id="create-quiz-form" class="quiz-form">
+                <div class="form-section">
+                    <h3 class="form-section-title">
+                        <img src="assets/icons/info.svg" alt="Info" class="section-icon">
+                        Quiz Information
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="quiz-title" class="form-label">Quiz Title</label>
+                        <input type="text" id="quiz-title" class="form-input" placeholder="Enter quiz title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quiz-description" class="form-label">Description</label>
+                        <textarea id="quiz-description" class="form-textarea" placeholder="Enter quiz description" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quiz-category" class="form-label">Category</label>
+                            <select id="quiz-category" class="form-select" required>
+                                <option value="">Select Category</option>
+                                <option value="science">Science</option>
+                                <option value="history">History</option>
+                                <option value="technology">Technology</option>
+                                <option value="general">General Knowledge</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quiz-timer" class="form-label">Time per Question (seconds)</label>
+                            <input type="number" id="quiz-timer" class="form-input" placeholder="30" min="10" max="300" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-row">
+                        <h3 class="form-section-title">
+                            <img src="assets/icons/question.svg" alt="Questions" class="section-icon">
+                            Questions
+                        </h3>
+                        <button type="button" class="btn btn-small btn-secondary" id="add-question-btn">
+                            <img src="assets/icons/plus.svg" alt="Add" class="btn-icon">
+                            Add Question
+                        </button>
+                    </div>
+
+                    <div id="questions-container">
+                        <!-- Questions will be added dynamically -->
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">
+                        <img src="assets/icons/close.svg" alt="Cancel" class="btn-icon">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <img src="assets/icons/save.svg" alt="Save" class="btn-icon">
+                        Create Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="character-helper">
+            <img src="assets/characters/create-character.svg" alt="Helper" class="helper-img animated-bounce">
+        </div>
+    </main>
+
+    <script src="js/database.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/create-quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="bodyGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c9184a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Body -->
+  <ellipse cx="100" cy="125" rx="48" ry="58" fill="url(#bodyGrad3)"/>
+  
+  <!-- Head -->
+  <circle cx="100" cy="60" r="36" fill="#00d4ff"/>
+  
+  <!-- Excited eyes -->
+  <circle cx="88" cy="55" r="8" fill="white"/>
+  <circle cx="112" cy="55" r="8" fill="white"/>
+  <circle cx="90" cy="55" r="5" fill="#0a1929">
+    <animate attributeName="cy" values="55;57;55" dur="0.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="114" cy="55" r="5" fill="#0a1929">
+    <animate attributeName="cy" values="55;57;55" dur="0.3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Big smile -->
+  <path d="M 80 68 Q 100 80 120 68" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Arms raised in victory -->
+  <ellipse cx="55" cy="100" rx="12" ry="35" fill="#ff6b9d" transform="rotate(-45 55 100)"/>
+  <ellipse cx="145" cy="100" rx="12" ry="35" fill="#ff6b9d" transform="rotate(45 145 100)"/>
+  
+  <!-- Hands -->
+  <circle cx="40" cy="75" r="11" fill="#00d4ff">
+    <animate attributeName="cy" values="75;70;75" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="160" cy="75" r="11" fill="#00d4ff">
+    <animate attributeName="cy" values="75;70;75" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Legs -->
+  <ellipse cx="85" cy="180" rx="16" ry="27" fill="#c9184a"/>
+  <ellipse cx="115" cy="180" rx="16" ry="27" fill="#c9184a"/>
+  
+  <!-- Thinking bubble with lightbulb -->
+  <circle cx="145" cy="35" r="18" fill="white" opacity="0.9"/>
+  <circle cx="155" cy="25" r="12" fill="white" opacity="0.9"/>
+  <circle cx="160" cy="18" r="8" fill="white" opacity="0.9"/>
+  
+  <path d="M 143 30 L 145 38 L 147 30 Z" fill="#ffd700">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+  <ellipse cx="145" cy="27" rx="4" ry="6" fill="#ffd700">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+  </ellipse>
+</svg>

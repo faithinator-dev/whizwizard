@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Quizzes - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/icons/logo.svg" alt="QuizMaster Logo" class="logo-icon">
+                <span class="logo-text">QuizMaster</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <img src="assets/icons/home.svg" alt="Home" class="nav-icon">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="create-quiz.html" class="nav-link">
+                        <img src="assets/icons/create.svg" alt="Create" class="nav-icon">
+                        Create Quiz
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="my-quizzes.html" class="nav-link active">
+                        <img src="assets/icons/quiz.svg" alt="Quizzes" class="nav-icon">
+                        My Quizzes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="leaderboard.html" class="nav-link">
+                        <img src="assets/icons/trophy.svg" alt="Leaderboard" class="nav-icon">
+                        Leaderboard
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-auth" id="nav-auth">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">My Quizzes</h1>
+            <p class="page-subtitle">Manage your created quizzes</p>
+        </div>
+
+        <div class="my-quizzes-container">
+            <div class="quizzes-grid" id="my-quizzes-container">
+                <!-- Quizzes will be loaded dynamically -->
+            </div>
+            
+            <div class="empty-state" id="empty-state">
+                <img src="assets/characters/empty-character.svg" alt="No Quizzes" class="empty-character animated-float">
+                <h3 class="empty-title">No Quizzes Yet</h3>
+                <p class="empty-text">You haven't created any quizzes. Start creating one now!</p>
+                <a href="create-quiz.html" class="btn btn-primary">
+                    <img src="assets/icons/plus.svg" alt="Create" class="btn-icon">
+                    Create Your First Quiz
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal hidden" id="delete-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <h3 class="modal-title">Delete Quiz?</h3>
+            <p class="modal-text">Are you sure you want to delete this quiz? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancel-delete-btn">
+                    <img src="assets/icons/close.svg" alt="Cancel" class="btn-icon">
+                    Cancel
+                </button>
+                <button class="btn btn-danger" id="confirm-delete-btn">
+                    <img src="assets/icons/trash.svg" alt="Delete" class="btn-icon">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/live-quiz.js"></script>
+    <script src="js/my-quizzes.js"></script>
+</body>
+</html>

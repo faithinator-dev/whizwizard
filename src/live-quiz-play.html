@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Quiz - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="live-quiz-body">
+    <div class="live-quiz-container">
+        <!-- Question Screen -->
+        <div class="live-question-screen" id="question-screen">
+            <div class="live-header">
+                <div class="live-quiz-info">
+                    <span class="live-question-number" id="question-number">1/10</span>
+                </div>
+                <div class="live-timer-container">
+                    <svg class="timer-circle" viewBox="0 0 100 100">
+                        <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                        <circle class="timer-progress" id="timer-progress" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <span class="timer-text" id="timer-text">12</span>
+                </div>
+            </div>
+
+            <div class="live-question-content">
+                <h2 class="live-question-text" id="question-text">Question text will appear here</h2>
+            </div>
+
+            <div class="live-options-grid" id="options-grid">
+                <!-- Options will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Leaderboard Screen -->
+        <div class="live-leaderboard-screen hidden" id="leaderboard-screen">
+            <div class="leaderboard-header">
+                <h2 class="leaderboard-title">Top 10 Players</h2>
+                <p class="leaderboard-subtitle">After Question <span id="current-question-num">1</span></p>
+            </div>
+
+            <div class="leaderboard-content">
+                <div class="leaderboard-list" id="live-leaderboard-list">
+                    <!-- Leaderboard entries will be added dynamically -->
+                </div>
+            </div>
+
+            <div class="next-question-timer">
+                <p>Next question in <span id="next-question-timer">5</span> seconds...</p>
+                <div class="countdown-bar">
+                    <div class="countdown-fill" id="countdown-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Results Screen -->
+        <div class="live-results-screen hidden" id="results-screen">
+            <div class="results-header">
+                <img src="assets/characters/result-character.svg" alt="Results" class="results-character animated-scale">
+                <h2 class="results-title">Quiz Complete!</h2>
+            </div>
+
+            <div class="final-leaderboard">
+                <h3 class="final-leaderboard-title">Final Rankings</h3>
+                <div class="podium-container">
+                    <div class="podium-place podium-second" id="final-second">
+                        <div class="podium-rank">2</div>
+                        <div class="podium-name">-</div>
+                        <div class="podium-score">0</div>
+                    </div>
+                    <div class="podium-place podium-first" id="final-first">
+                        <div class="podium-rank">1</div>
+                        <div class="podium-name">-</div>
+                        <div class="podium-score">0</div>
+                    </div>
+                    <div class="podium-place podium-third" id="final-third">
+                        <div class="podium-rank">3</div>
+                        <div class="podium-name">-</div>
+                        <div class="podium-score">0</div>
+                    </div>
+                </div>
+
+                <div class="final-leaderboard-list" id="final-leaderboard-list">
+                    <!-- Final rankings will be added dynamically -->
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <a href="index.html" class="btn btn-primary btn-large">
+                    <img src="assets/icons/home.svg" alt="Home" class="btn-icon">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/live-quiz.js"></script>
+    <script src="js/live-quiz-play.js"></script>
+</body>
+</html>

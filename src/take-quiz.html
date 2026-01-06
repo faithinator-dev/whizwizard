@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/icons/logo.svg" alt="QuizMaster Logo" class="logo-icon">
+                <span class="logo-text">QuizMaster</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <img src="assets/icons/home.svg" alt="Home" class="nav-icon">
+                        Home
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <div class="quiz-info">
+                    <h2 id="quiz-title" class="quiz-title-text">Quiz Title</h2>
+                    <div class="quiz-progress">
+                        <span id="current-question">1</span> / <span id="total-questions">10</span>
+                    </div>
+                </div>
+                <div class="timer-container">
+                    <img src="assets/icons/timer.svg" alt="Timer" class="timer-icon">
+                    <div class="timer" id="timer">30</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="question-container" id="question-container">
+                <div class="question-content">
+                    <h3 class="question-text" id="question-text">Loading question...</h3>
+                    
+                    <div class="options-container" id="options-container">
+                        <!-- Options will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="question-character">
+                    <img src="assets/characters/quiz-character.svg" alt="Character" class="character-img animated-pulse">
+                </div>
+            </div>
+
+            <div class="quiz-actions">
+                <button class="btn btn-secondary" id="prev-btn" disabled>
+                    <img src="assets/icons/arrow-left.svg" alt="Previous" class="btn-icon">
+                    Previous
+                </button>
+                <button class="btn btn-primary" id="next-btn">
+                    Next
+                    <img src="assets/icons/arrow-right.svg" alt="Next" class="btn-icon">
+                </button>
+            </div>
+        </div>
+
+        <div class="result-container hidden" id="result-container">
+            <div class="result-card">
+                <img src="assets/characters/result-character.svg" alt="Result" class="result-character animated-scale">
+                <h2 class="result-title">Quiz Completed!</h2>
+                <div class="result-score">
+                    <div class="score-circle">
+                        <div class="score-value" id="score-value">0</div>
+                        <div class="score-label">Score</div>
+                    </div>
+                </div>
+                <div class="result-details">
+                    <div class="result-item">
+                        <img src="assets/icons/checkmark.svg" alt="Correct" class="result-icon">
+                        <span>Correct: <strong id="correct-answers">0</strong></span>
+                    </div>
+                    <div class="result-item">
+                        <img src="assets/icons/close.svg" alt="Wrong" class="result-icon">
+                        <span>Wrong: <strong id="wrong-answers">0</strong></span>
+                    </div>
+                    <div class="result-item">
+                        <img src="assets/icons/timer.svg" alt="Time" class="result-icon">
+                        <span>Time: <strong id="time-taken">0:00</strong></span>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <a href="index.html" class="btn btn-secondary">
+                        <img src="assets/icons/home.svg" alt="Home" class="btn-icon">
+                        Home
+                    </a>
+                    <a href="leaderboard.html" class="btn btn-primary">
+                        <img src="assets/icons/trophy.svg" alt="Leaderboard" class="btn-icon">
+                        View Leaderboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/database.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/take-quiz.js"></script>
+</body>
+</html>

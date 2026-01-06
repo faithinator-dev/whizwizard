@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Live Quiz - QuizMaster</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/icons/logo.svg" alt="QuizMaster Logo" class="logo-icon">
+                <span class="logo-text">QuizMaster</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <img src="assets/icons/home.svg" alt="Home" class="nav-icon">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link" id="user-name-display">Guest</span>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Join Code Input -->
+        <div class="join-container" id="join-container">
+            <div class="join-box animated-scale">
+                <div class="join-header">
+                    <img src="assets/characters/quiz-character.svg" alt="Join Quiz" class="join-character animated-pulse">
+                    <h1 class="join-title">Join Live Quiz</h1>
+                    <p class="join-subtitle">Enter the quiz code to join</p>
+                </div>
+
+                <form id="join-code-form" class="join-form">
+                    <div class="code-input-group">
+                        <input type="text" id="quiz-code-input" class="code-input" placeholder="ENTER CODE" maxlength="6" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <img src="assets/icons/play.svg" alt="Join" class="btn-icon">
+                        Join Quiz
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lobby/Waiting Room -->
+        <div class="lobby-container hidden" id="lobby-container">
+            <div class="lobby-header">
+                <h2 class="lobby-quiz-name" id="lobby-quiz-name">Quiz Name</h2>
+                <div class="lobby-code">
+                    <span>Code:</span>
+                    <span class="code-display" id="lobby-code-display">000000</span>
+                </div>
+            </div>
+
+            <div class="lobby-content">
+                <div class="lobby-players">
+                    <h3 class="lobby-section-title">
+                        <img src="assets/icons/users.svg" alt="Players" class="section-icon">
+                        Players (<span id="player-count">0</span>)
+                    </h3>
+                    <div class="players-grid" id="players-grid">
+                        <!-- Players will be added dynamically -->
+                    </div>
+                </div>
+
+                <div class="lobby-info">
+                    <div class="info-card">
+                        <img src="assets/icons/question.svg" alt="Questions" class="info-icon">
+                        <div class="info-text">
+                            <div class="info-label">Questions</div>
+                            <div class="info-value" id="question-count">0</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <img src="assets/icons/timer.svg" alt="Time" class="info-icon">
+                        <div class="info-text">
+                            <div class="info-label">Time per Question</div>
+                            <div class="info-value">12 seconds</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lobby-status">
+                <p class="status-text" id="lobby-status">Waiting for host to start the quiz...</p>
+                <div class="loading-dots"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/live-quiz.js"></script>
+    <script src="js/join-quiz.js"></script>
+</body>
+</html>
