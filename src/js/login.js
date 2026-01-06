@@ -18,16 +18,32 @@ function handleLogin(e) {
 
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
 
     if (!email || !password) {
         QuizUtils.showNotification('Please fill in all fields', 'error');
         return;
     }
 
-    const result = Auth.login(email, password);
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in...';
 
-    if (result.success) {
-        QuizUtils.showNotification('Login successful!', 'success');
+    // Use API for login
+    API.auth.login(email, password)
+        .then(data => {
+            QuizUtils.showNotification('Login successful!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Login error:', error);
+            QuizUtils.showNotification(error.message || 'Login failed. Please try again.', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Login';
+        });
+}
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 1000);

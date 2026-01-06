@@ -20,6 +20,7 @@ function handleSignup(e) {
     const email = document.getElementById('signup-email').value.trim();
     const password = document.getElementById('signup-password').value;
     const confirmPassword = document.getElementById('signup-confirm').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
 
     // Validation
     if (!name || !email || !password || !confirmPassword) {
@@ -37,7 +38,25 @@ function handleSignup(e) {
         return;
     }
 
-    const result = Auth.register(name, email, password);
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating account...';
+
+    // Use API for registration
+    API.auth.register(name, email, password)
+        .then(data => {
+            QuizUtils.showNotification('Account created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Signup error:', error);
+            QuizUtils.showNotification(error.message || 'Signup failed. Please try again.', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign Up';
+        });
+}
 
     if (result.success) {
         QuizUtils.showNotification('Account created successfully!', 'success');
