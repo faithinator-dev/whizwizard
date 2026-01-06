@@ -1,4 +1,4 @@
-# QuizMaster - Live Quiz Hosting Platform
+# WhizWizard - Live Quiz Hosting Platform
 
 A fully functional multiplayer quiz hosting platform with **real MongoDB database**, Node.js/Express backend, and modern frontend. Features JWT authentication, Kahoot-style live quiz functionality with real-time leaderboards, and a beautiful navy blue theme with smooth animations.
 
@@ -513,7 +513,7 @@ Backend not starting
 
 ## Credits
 
-**Developer**: QuizMaster Team
+**Developer**: WhizWizard Team
 **Version**: 1.0.0
 **Date**: December 31, 2025
 **License**: MIT
@@ -527,4 +527,4 @@ For issues or questions, please check:
 
 ---
 
-**Enjoy creating and taking quizzes with QuizMaster! 🎯**
+**Enjoy creating and taking quizzes with WhizWizard! 🎯**

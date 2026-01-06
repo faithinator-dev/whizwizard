@@ -1,6 +1,6 @@
 # 🚀 Complete Setup Guide - Real Database
 
-Your QuizMaster app now has a **real backend with MongoDB**! Here's how to set it up.
+Your WhizWizard app now has a **real backend with MongoDB**! Here's how to set it up.
 
 ## What Changed?
 
@@ -72,7 +72,7 @@ This installs:
 The `.env` file is already created with defaults:
 
 ```env
-MONGODB_URI=mongodb://localhost:27017/quizmaster
+MONGODB_URI=mongodb://localhost:27017/WhizWizard
 JWT_SECRET=super-secret-jwt-key-change-this-in-production-abc123
 PORT=3000
 NODE_ENV=development
@@ -80,7 +80,7 @@ NODE_ENV=development
 
 **If using MongoDB Atlas:**
 1. Replace `MONGODB_URI` with your Atlas connection string
-2. Example: `mongodb+srv://username:password@cluster.mongodb.net/quizmaster`
+2. Example: `mongodb+srv://username:password@cluster.mongodb.net/WhizWizard`
 
 ### Step 3: Start the Backend
 
@@ -95,7 +95,7 @@ npm run dev
 You should see:
 ```
 ✅ Connected to MongoDB
-🚀 QuizMaster API running on http://localhost:3000
+🚀 WhizWizard API running on http://localhost:3000
 📊 Environment: development
 ```
 
@@ -110,7 +110,7 @@ You should see:
 ```json
 {
   "status": "ok",
-  "message": "QuizMaster API is running",
+  "message": "WhizWizard API is running",
   "timestamp": "2025-12-31T..."
 }
 ```
@@ -218,12 +218,12 @@ Open `src/index.html` in browser
 **Using MongoDB Compass (GUI):**
 1. Download: https://www.mongodb.com/products/compass
 2. Connect to: `mongodb://localhost:27017`
-3. View `quizmaster` database
+3. View `WhizWizard` database
 
 **Using MongoDB Shell:**
 ```bash
 mongo
-use quizmaster
+use WhizWizard
 db.users.find().pretty()
 db.quizzes.find().pretty()
 db.liverooms.find().pretty()

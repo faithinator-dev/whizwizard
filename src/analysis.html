@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Analysis - WhizWizard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .analysis-container {
+            max-width: 1000px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+            background: var(--secondary-navy);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--accent-navy);
+            padding-bottom: 2rem;
+        }
+
+        .report-header h1 {
+            color: var(--accent-cyan);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-meta {
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .section-card {
+            background: rgba(10, 25, 41, 0.5);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title i {
+            color: var(--accent-cyan);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            background: var(--primary-navy);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .feature-item h3 {
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .financial-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .financial-table th, .financial-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--accent-navy);
+        }
+
+        .financial-table th {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .cost-highlight {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .print-btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            text-align: center;
+            background: var(--accent-blue);
+            color: white;
+            padding: 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        @media print {
+            .navbar, .print-btn { display: none; }
+            .analysis-container { margin: 0; box-shadow: none; border: none; }
+            body { background: white; color: black; }
+            .section-card { border: 1px solid #ccc; color: black; background: white; }
+            h1, h2, h3 { color: black !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-hat-wizard"></i>
+                WhizWizard
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="login.html" class="btn-login">Login</a>
+                <a href="signup.html" class="btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="analysis-container">
+        <div class="report-header">
+            <h1>Project Analysis Report</h1>
+            <div class="report-meta">
+                <span><i class="far fa-calendar"></i> January 2026</span>
+                <span><i class="fas fa-code-branch"></i> Version 1.0</span>
+                <span><i class="fas fa-server"></i> Stack: Node.js + Firebase</span>
+            </div>
+        </div>
+
+        <!-- Section 1: Functionality -->
+        <div class="section-card">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> What It Does</h2>
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+                WhizWizard is a comprehensive interactive quiz platform that bridges the gap between learning and entertainment. It allows educators and quiz masters to create engaging content and host real-time sessions where participants compete for the top spot on the leaderboard.
+            </p>
+        </div>
+
+        <!-- Section 2: Capabilities -->
+        <div class="section-card">
+            <h2 class="section-title"><i class="fas fa-bolt"></i> Capabilities & Features</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3><i class="fas fa-users"></i> Live Multiplayer</h3>
+                    <p>Real-time hosting capabilities with room codes, live score updates, and synchronized question states.</p>
+                </div>
+                <div class="feature-item">
+                    <h3><i class="fas fa-pencil-alt"></i> Quiz Builder</h3>
+                    <p>Intuitive creator tools to design multiple-choice questions with custom timers and points.</p>
+                </div>
+                <div class="feature-item">
+                    <h3><i class="fas fa-chart-line"></i> Analytics</h3>
+                    <p>Comprehensive result tracking, history storage, and global leaderboards utilizing Firestore.</p>
+                </div>
+                <div class="feature-item">
+                    <h3><i class="fas fa-mobile-alt"></i> Responsive</h3>
+                    <p>Fully optimized for mobile devices, allowing students to play from phones while the host uses a projector.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Usage -->
+        <div class="section-card">
+            <h2 class="section-title"><i class="fas fa-book-reader"></i> Operational Guide</h2>
+            <div style="color: var(--text-secondary);">
+                <ul style="list-style-position: inside; line-height: 1.8;">
+                    <li><strong>Hosts:</strong> Register an account &rarr; Create Quiz &rarr; Host Live &rarr; Share Code.</li>
+                    <li><strong>Players:</strong> Join via Code &rarr; Enter Nickname &rarr; Compete.</li>
+                    <li><strong>Admins:</strong> Deploy backend to Node.js environment &rarr; Configure Firebase.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 4: Budget Analysis -->
+        <div class="section-card">
+            <h2 class="section-title"><i class="fas fa-coins"></i> Financial & Worker Analysis</h2>
+            
+            <h3 style="color: var(--text-primary); margin-top: 1rem;">Estimated Monthly Expenses</h3>
+            <table class="financial-table">
+                <thead>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Provider</th>
+                        <th>Cost (Est.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Database & Auth</td>
+                        <td>Google Firebase (Spark)</td>
+                        <td class="cost-highlight">$0.00 / mo</td>
+                    </tr>
+                    <tr>
+                        <td>Backend Hosting</td>
+                        <td>Render / Heroku / Vercel</td>
+                        <td class="cost-highlight">$7.00 / mo</td>
+                    </tr>
+                    <tr>
+                        <td>Domain Name</td>
+                        <td>Registrar</td>
+                        <td class="cost-highlight">$1.00 / mo</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--text-primary); margin-top: 2rem;">Development Valuation</h3>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem; margin-bottom: 1rem;">
+                Estimated cost to replicate WhizWizard with a professional team:
+            </p>
+            <div class="feature-grid">
+                <div class="feature-item" style="background: rgba(74, 144, 226, 0.1);">
+                    <h3>Development Time</h3>
+                    <p style="font-size: 1.5rem; color: var(--text-primary);">~5 Weeks</p>
+                    <p style="font-size: 0.9rem;">2 Developers (Frontend + Backend)</p>
+                </div>
+                <div class="feature-item" style="background: rgba(0, 230, 118, 0.1);">
+                    <h3>Project Value</h3>
+                    <p style="font-size: 1.5rem; color: var(--success-color);">$12,000+</p>
+                    <p style="font-size: 0.9rem;">Based on agency rates ($75/hr)</p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="window.print()" class="print-btn">
+            <i class="fas fa-print"></i> Print / Save as PDF
+        </button>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Simple auth check for navbar state
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = Auth.getUser();
+            const navLinks = document.querySelector('.nav-links');
+            if (user) {
+                navLinks.innerHTML = `
+                    <a href="index.html">Home</a>
+                    <a href="my-quizzes.html">My Quizzes</a>
+                    <a href="#" onclick="Auth.logout()">Logout</a>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

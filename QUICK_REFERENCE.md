@@ -60,7 +60,7 @@ http://localhost:3000/api/health
 ```powershell
 mongo
 show dbs
-use quizmaster
+use whizwizard
 show collections
 ```
 
@@ -83,7 +83,7 @@ mongod --verbose
 ### Clear Database
 ```powershell
 mongo
-use quizmaster
+use whizwizard
 db.dropDatabase()
 ```
 
@@ -174,7 +174,7 @@ API: `POST /api/live-rooms/join`
 
 Edit `.env` file:
 ```env
-MONGODB_URI=mongodb://localhost:27017/quizmaster
+MONGODB_URI=mongodb://localhost:27017/whizwizard
 JWT_SECRET=your-secret-key
 PORT=3000
 NODE_ENV=development
@@ -183,7 +183,7 @@ NODE_ENV=development
 ## 💾 Database Collections
 
 ```
-quizmaster/
+whizwizard/
 ├── users        # User accounts
 ├── quizzes      # Quiz questions
 ├── liverooms    # Active game rooms

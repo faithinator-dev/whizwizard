@@ -1,4 +1,4 @@
-# QuizMaster Live - Quick Start Guide
+# WhizWizard Live - Quick Start Guide
 
 ## 🚀 What's New - Live Quiz Features!
 

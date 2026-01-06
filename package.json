@@ -1,5 +1,5 @@
 {
-  "name": "quizmaster-backend",
+  "name": "whizwizard-backend",
   "version": "1.0.0",
   "description": "Live quiz platform backend with Firebase",
   "main": "server/server.js",

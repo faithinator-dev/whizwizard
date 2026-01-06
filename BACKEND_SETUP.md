@@ -1,4 +1,4 @@
-# QuizMaster Backend Setup
+# whizwizard Backend Setup
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ mongod --dbpath "C:\data\db"
 ### 3. Configure Environment
 
 The `.env` file is already created with default settings:
-- MongoDB URI: `mongodb://localhost:27017/quizmaster`
+- MongoDB URI: `mongodb://localhost:27017/whizwizard`
 - Port: `3000`
 - JWT Secret: (change this in production!)
 
@@ -60,7 +60,7 @@ You should see:
 ```json
 {
   "success": true,
-  "message": "QuizMaster API is running",
+  "message": "whizwizard API is running",
   "timestamp": "2025-12-31T..."
 }
 ```
@@ -188,12 +188,12 @@ Then open: `http://localhost:8000`
 Using MongoDB Compass (GUI):
 1. Download: https://www.mongodb.com/try/download/compass
 2. Connect to: `mongodb://localhost:27017`
-3. Select database: `quizmaster`
+3. Select database: `whizwizard`
 
 Using mongo shell:
 ```powershell
 mongo
-use quizmaster
+use whizwizard
 db.users.find()
 db.quizzes.find()
 db.liverooms.find()
@@ -203,7 +203,7 @@ db.liverooms.find()
 
 ```powershell
 mongo
-use quizmaster
+use whizwizard
 db.dropDatabase()
 ```
 
@@ -232,7 +232,7 @@ Before deploying to production:
 
 2. **Use MongoDB Atlas** (cloud database):
    ```
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/quizmaster
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/whizwizard
    ```
 
 3. **Set NODE_ENV**:

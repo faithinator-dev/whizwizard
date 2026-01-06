@@ -2,7 +2,7 @@
 
 ## What Was Added
 
-Your QuizMaster app now has a **complete backend with real MongoDB database**!
+Your WhizWizard app now has a **complete backend with real MongoDB database**!
 
 ### ✅ Backend Files Created
 

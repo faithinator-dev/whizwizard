@@ -6,7 +6,7 @@ const Auth = {
     // Check if user is authenticated
     isAuthenticated() {
         const currentUser = Database.getCurrentUser();
-        return currentUser && currentUser.email && currentUser.email !== 'guest@quizmaster.com';
+        return currentUser && currentUser.email && currentUser.email !== 'guest@whizwizard.com';
     },
 
     // Get current authenticated user
@@ -70,7 +70,7 @@ const Auth = {
         const guestUser = {
             id: Database.generateId(),
             name: 'Guest User',
-            email: 'guest@quizmaster.com',
+            email: 'guest@whizwizard.com',
             createdAt: new Date().toISOString()
         };
         

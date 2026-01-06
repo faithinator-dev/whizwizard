@@ -1,8 +1,8 @@
-# QuizMaster Backend Setup Script
+# WhizWizard Backend Setup Script
 # Run this to install and start the backend
 
 Write-Host "================================" -ForegroundColor Cyan
-Write-Host "QuizMaster Backend Setup" -ForegroundColor Cyan
+Write-Host "WhizWizard Backend Setup" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host ""
 

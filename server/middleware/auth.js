@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const { getAuth } = require('../config/database');
 const User = require('../models/User');
 
 const protect = async (req, res, next) => {
@@ -17,11 +17,12 @@ const protect = async (req, res, next) => {
     }
 
     try {
-        // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        // Verify Firebase token
+        const auth = getAuth();
+        const decodedToken = await auth.verifyIdToken(token);
 
         // Get user from token
-        req.user = await User.findById(decoded.id).select('-password');
+        req.user = await User.findById(decodedToken.uid);
 
         if (!req.user) {
             return res.status(401).json({
@@ -32,6 +33,7 @@ const protect = async (req, res, next) => {
 
         next();
     } catch (error) {
+        console.error('Auth middleware error:', error.message);
         return res.status(401).json({
             success: false,
             message: 'Not authorized to access this route'

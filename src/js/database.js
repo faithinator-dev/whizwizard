@@ -20,7 +20,7 @@ const Database = {
             const defaultUser = {
                 id: this.generateId(),
                 name: 'Guest User',
-                email: 'guest@quizmaster.com',
+                email: 'guest@whizwizard.com',
                 createdAt: new Date().toISOString()
             };
             localStorage.setItem('currentUser', JSON.stringify(defaultUser));

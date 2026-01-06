@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/database');
+const { initializeFirebase } = require('./config/database');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -12,8 +12,8 @@ const liveRoomRoutes = require('./routes/liveRooms');
 // Initialize express
 const app = express();
 
-// Connect to database
-connectDB();
+// Initialize Firebase
+initializeFirebase();
 
 // Middleware
 app.use(cors({
@@ -39,7 +39,7 @@ app.use('/api/live-rooms', liveRoomRoutes);
 app.get('/api/health', (req, res) => {
     res.json({
         success: true,
-        message: 'QuizMaster API is running',
+        message: 'WhizWizard API is running',
         timestamp: new Date().toISOString()
     });
 });
@@ -65,7 +65,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log('\n🚀 QuizMaster Backend Server Started');
+    console.log('\n🚀 WhizWizard Backend Server Started');
     console.log('=====================================');
     console.log(`📡 Server running on port ${PORT}`);
     console.log(`🌐 API URL: http://localhost:${PORT}/api`);
