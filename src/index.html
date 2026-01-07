@@ -10,18 +10,24 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <img src="assets/icons/logo.svg" alt="WhizWizard Logo" class="logo-icon">
-                <span class="logo-text">WhizWizard</span>
+            <div class="nav-left">
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="logo">
+                    <img src="assets/icons/logo.svg" alt="WhizWizard Logo" class="logo-icon">
+                    <span class="logo-text">WhizWizard</span>
+                </div>
             </div>
             
-            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            
             <ul class="nav-menu" id="nav-menu">
+                <!-- User profile section (mobile only) -->
+                <div class="mobile-user-profile" id="mobile-user-profile">
+                    <!-- Populated by JavaScript -->
+                </div>
+                
                 <li class="nav-item">
                     <a href="index.html" class="nav-link active">
                         <img src="assets/icons/home.svg" alt="Home" class="nav-icon">
@@ -46,6 +52,11 @@
                         <span>Leaderboard</span>
                     </a>
                 </li>
+                
+                <!-- Mobile logout (shown when logged in) -->
+                <div class="mobile-logout" id="mobile-logout">
+                    <!-- Populated by JavaScript -->
+                </div>
             </ul>
             <div class="nav-auth" id="nav-auth">
                 <!-- Will be populated by JavaScript -->

@@ -79,6 +79,14 @@ body {
     justify-content: space-between;
     align-items: center;
     height: 70px;
+    gap: var(--spacing-md);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 0 0 auto;
 }
 
 .logo {
@@ -149,11 +157,12 @@ body {
     cursor: pointer;
     padding: var(--spacing-xs);
     z-index: 1001;
+    order: -1; /* Place before logo */
 }
 
 .hamburger span {
     display: block;
-    width: 28px;
+    width: 25px;
     height: 3px;
     background-color: var(--text-primary);
     transition: all 0.3s ease;
@@ -161,7 +170,7 @@ body {
 }
 
 .hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
+    transform: rotate(45deg) translate(7px, 7px);
 }
 
 .hamburger.active span:nth-child(2) {
@@ -176,6 +185,81 @@ body {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+}
+
+/* Mobile Menu Profile Section */
+.mobile-user-profile {
+    display: none;
+    padding: var(--spacing-lg);
+    background: var(--accent-navy);
+    border-bottom: 2px solid var(--accent-cyan);
+    margin-bottom: var(--spacing-md);
+}
+
+.mobile-user-profile.active {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.mobile-user-info {
+    flex: 1;
+}
+
+.mobile-user-name {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.mobile-user-email {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.mobile-user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-cyan);
+}
+
+.mobile-default-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-weight: bold;
+    font-size: 1.5rem;
+    border: 3px solid var(--accent-cyan);
+}
+
+/* Mobile Menu Logout */
+.mobile-logout {
+    display: none;
+    padding: var(--spacing-md);
+    border-top: 2px solid var(--accent-navy);
+    margin-top: auto;
+}
+
+.mobile-logout.active {
+    display: block;
+}
+
+.mobile-logout .btn {
+    width: 100%;
+    justify-content: center;
+    background: var(--danger-color);
+    color: var(--text-primary);
+}
+
+.mobile-logout .btn:hover {
+    background: #e63946;
 }
 
 .user-name {
@@ -1258,9 +1342,18 @@ body {
 
 /* Mobile landscape and below (768px) */
 @media (max-width: 768px) {
-    /* Navigation - Hamburger Menu */
+    /* Navigation */
     .hamburger {
         display: flex;
+    }
+    
+    .nav-left {
+        flex: 0 0 auto;
+    }
+    
+    /* Hide desktop auth buttons in mobile */
+    .nav-auth {
+        display: none;
     }
     
     .nav-menu {
@@ -1268,14 +1361,17 @@ body {
         top: 70px;
         left: -100%;
         width: 100%;
+        max-width: 320px;
         height: calc(100vh - 70px);
         background-color: var(--secondary-navy);
         flex-direction: column;
-        padding: var(--spacing-lg);
+        padding: 0;
         gap: 0;
         transition: left 0.3s ease;
         overflow-y: auto;
-        border-top: 2px solid var(--accent-navy);
+        border-right: 2px solid var(--accent-navy);
+        box-shadow: var(--shadow-lg);
+        display: flex;
     }
     
     .nav-menu.active {
@@ -1284,19 +1380,33 @@ body {
     
     .nav-item {
         width: 100%;
-        border-bottom: 1px solid var(--accent-navy);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     
     .nav-link {
         width: 100%;
-        padding: var(--spacing-md);
-        font-size: 1.1rem;
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: 1rem;
         border-radius: 0;
         justify-content: flex-start;
+        gap: var(--spacing-md);
     }
     
+    .nav-link:hover {
+        background-color: var(--accent-navy);
+        transform: none;
+        padding-left: calc(var(--spacing-lg) + 8px);
+    }
+    
+    .nav-link.active {
+        background-color: var(--accent-blue);
+        border-left: 4px solid var(--accent-cyan);
+    }
+    
+    /* Show text in mobile menu */
     .nav-link span {
         display: inline;
+        font-weight: 500;
     }
     
     .nav-icon {
@@ -1425,10 +1535,15 @@ body {
     .nav-container {
         height: 60px;
         padding: 0 var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-left {
+        gap: var(--spacing-sm);
     }
     
     .logo-text {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
     }
     
     .logo-icon {
@@ -1439,7 +1554,7 @@ body {
     .nav-menu {
         top: 60px;
         height: calc(100vh - 60px);
-        padding: var(--spacing-md);
+        max-width: 280px;
     }
     
     .nav-link {
@@ -1477,28 +1592,20 @@ body {
     }
     
     .nav-link {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-        min-height: 44px; /* Touch-friendly */
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.95rem;
+        min-height: 48px;
+        gap: var(--spacing-sm);
     }
     
-    /* Hide text on small screens, show icons only */
+    /* Show text in mobile menu */
     .nav-link span {
-        display: none;
+        display: inline;
     }
     
     .nav-icon {
         width: 20px;
         height: 20px;
-    }
-    
-    .user-name {
-        display: none;
-    }
-    
-    .user-avatar {
-        width: 36px;
-        height: 36px;
     }
     
     /* Quiz Cards */

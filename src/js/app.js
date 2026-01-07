@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Update authentication navigation
 function updateAuthNavigation() {
     const navAuth = document.getElementById('nav-auth');
+    const mobileProfile = document.getElementById('mobile-user-profile');
+    const mobileLogout = document.getElementById('mobile-logout');
     
     if (Auth.isAuthenticated()) {
         const user = Auth.getUser();
@@ -33,6 +35,7 @@ function updateAuthNavigation() {
             avatarHTML = `<div class="default-avatar" onclick="window.location.href='profile.html'">${initials}</div>`;
         }
         
+        // Desktop navigation
         navAuth.innerHTML = `
             <div class="user-menu">
                 ${avatarHTML}
@@ -41,6 +44,38 @@ function updateAuthNavigation() {
                 <button onclick="logout()" class="btn btn-secondary btn-sm">Logout</button>
             </div>
         `;
+        
+        // Mobile menu profile section
+        if (mobileProfile) {
+            let mobileAvatarHTML;
+            if (user.avatar) {
+                mobileAvatarHTML = `<img src="${user.avatar}" alt="${user.name}" class="mobile-user-avatar">`;
+            } else {
+                const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
+                mobileAvatarHTML = `<div class="mobile-default-avatar">${initials}</div>`;
+            }
+            
+            mobileProfile.innerHTML = `
+                ${mobileAvatarHTML}
+                <div class="mobile-user-info">
+                    <div class="mobile-user-name">${user.name}</div>
+                    <div class="mobile-user-email">${user.email || ''}</div>
+                </div>
+            `;
+            mobileProfile.classList.add('active');
+        }
+        
+        // Mobile menu logout section
+        if (mobileLogout) {
+            mobileLogout.innerHTML = `
+                ${user.role === 'admin' ? '<a href="admin-dashboard.html" class="btn btn-secondary" style="margin-bottom: var(--spacing-sm);"><img src="assets/icons/settings.svg" alt="Admin" class="nav-icon">Admin Dashboard</a>' : ''}
+                <button onclick="logout()" class="btn btn-danger">
+                    <img src="assets/icons/logout.svg" alt="Logout" class="nav-icon">
+                    Logout
+                </button>
+            `;
+            mobileLogout.classList.add('active');
+        }
     } else {
         navAuth.innerHTML = `
             <div class="auth-buttons">
@@ -48,6 +83,14 @@ function updateAuthNavigation() {
                 <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
             </div>
         `;
+        
+        // Hide mobile sections when logged out
+        if (mobileProfile) {
+            mobileProfile.classList.remove('active');
+        }
+        if (mobileLogout) {
+            mobileLogout.classList.remove('active');
+        }
     }
 }
 
