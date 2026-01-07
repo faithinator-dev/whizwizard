@@ -12,8 +12,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup form submission
     document.getElementById('signup-form').addEventListener('submit', handleSignup);
     
-    // Setup Google Sign-In
-    document.getElementById('google-signin-btn').addEventListener('click', handleGoogleSignIn);
+    // Setup Google Sign-In (hide if Firebase not configured)
+    const googleBtn = document.getElementById('google-signin-btn');
+    if (googleBtn) {
+        // Check if Firebase is configured
+        if (window.firebaseConfigured === false) {
+            // Hide Google Sign-In button
+            googleBtn.style.display = 'none';
+            console.log('ℹ️ Google Sign-In disabled - Firebase not configured');
+        } else {
+            googleBtn.addEventListener('click', handleGoogleSignIn);
+        }
+    }
 });
 
 function handleSignup(e) {

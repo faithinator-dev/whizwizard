@@ -12,10 +12,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup form submission
     document.getElementById('login-form').addEventListener('submit', handleLogin);
     
-    // Setup Google Sign-In
+    // Setup Google Sign-In (hide if Firebase not configured)
     const googleBtn = document.getElementById('google-signin-btn');
     if (googleBtn) {
-        googleBtn.addEventListener('click', handleGoogleSignIn);
+        // Check if Firebase is configured
+        if (window.firebaseConfigured === false) {
+            // Hide Google Sign-In button
+            googleBtn.style.display = 'none';
+            console.log('ℹ️ Google Sign-In disabled - Firebase not configured');
+        } else {
+            googleBtn.addEventListener('click', handleGoogleSignIn);
+        }
     }
 });
 

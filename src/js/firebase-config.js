@@ -31,8 +31,10 @@ if (typeof firebase !== 'undefined') {
             console.warn('⚠️ Firebase configuration not set. Google Sign-In will not work.');
             console.warn('📖 Please update firebase-config.js with your actual credentials.');
             console.warn('📖 See FIREBASE_WEB_CONFIG.md for instructions.');
-            // Don't throw error, just warn
+            // Set flag that Firebase is not configured
+            window.firebaseConfigured = false;
         } else {
+            window.firebaseConfigured = true;
             // Initialize Firebase app
             firebase.initializeApp(firebaseConfig);
             
