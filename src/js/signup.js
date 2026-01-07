@@ -42,8 +42,7 @@ function handleSignup(e) {
     }
 
     // Show loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Creating account...';
+    ButtonLoader.show(submitBtn);
 
     // Use API for registration
     API.auth.register(name, email, password)
@@ -56,15 +55,13 @@ function handleSignup(e) {
         .catch(error => {
             console.error('Signup error:', error);
             QuizUtils.showNotification(error.message || 'Signup failed. Please try again.', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Create Account';
+            ButtonLoader.hide(submitBtn);
         });
 }
 
 async function handleGoogleSignIn() {
     const googleBtn = document.getElementById('google-signin-btn');
-    googleBtn.disabled = true;
-    googleBtn.textContent = 'Signing in with Google...';
+    ButtonLoader.show(googleBtn);
 
     try {
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -105,7 +102,6 @@ async function handleGoogleSignIn() {
     } catch (error) {
         console.error('Google Sign-In error:', error);
         QuizUtils.showNotification(error.message || 'Google Sign-In failed', 'error');
-        googleBtn.disabled = false;
-        googleBtn.textContent = 'Sign up with Google';
+        ButtonLoader.hide(googleBtn);
     }
 }

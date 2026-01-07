@@ -165,6 +165,8 @@ function renumberQuestions() {
 function handleFormSubmit(e) {
     e.preventDefault();
     
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
     // Get form data
     const title = document.getElementById('quiz-title').value.trim();
     const description = document.getElementById('quiz-description').value.trim();
@@ -207,17 +209,24 @@ function handleFormSubmit(e) {
         return;
     }
     
-    // Save quiz
-    const savedQuiz = Database.saveQuiz(quizData);
+    // Show loading
+    ButtonLoader.show(submitBtn);
     
-    if (savedQuiz) {
-        QuizUtils.showNotification('Quiz created successfully!', 'success');
-        setTimeout(() => {
-            window.location.href = 'my-quizzes.html';
-        }, 1500);
-    } else {
-        QuizUtils.showNotification('Failed to create quiz', 'error');
-    }
+    // Simulate async save (add small delay for UX)
+    setTimeout(() => {
+        // Save quiz
+        const savedQuiz = Database.saveQuiz(quizData);
+        
+        if (savedQuiz) {
+            QuizUtils.showNotification('Quiz created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'my-quizzes.html';
+            }, 1000);
+        } else {
+            QuizUtils.showNotification('Failed to create quiz', 'error');
+            ButtonLoader.hide(submitBtn);
+        }
+    }, 500);
 }
 
 // Make removeQuestion available globally

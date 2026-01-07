@@ -32,8 +32,7 @@ function handleLogin(e) {
     }
 
     // Show loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Signing in...';
+    ButtonLoader.show(submitBtn);
 
     // Use API for login
     API.auth.login(email, password)
@@ -46,15 +45,13 @@ function handleLogin(e) {
         .catch(error => {
             console.error('Login error:', error);
             QuizUtils.showNotification(error.message || 'Login failed. Please try again.', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Login';
+            ButtonLoader.hide(submitBtn);
         });
 }
 
 async function handleGoogleSignIn() {
     const googleBtn = document.getElementById('google-signin-btn');
-    googleBtn.disabled = true;
-    googleBtn.textContent = 'Connecting to Google...';
+    ButtonLoader.show(googleBtn);
 
     try {
         if (typeof firebase === 'undefined' || !window.googleProvider) {
@@ -95,8 +92,7 @@ async function handleGoogleSignIn() {
     } catch (error) {
         console.error('Google sign-in error:', error);
         QuizUtils.showNotification(error.message || 'Google sign-in failed. Please try again.', 'error');
-        googleBtn.disabled = false;
-        googleBtn.textContent = 'Continue with Google';
+        ButtonLoader.hide(googleBtn);
     }
 }
         setTimeout(() => {
