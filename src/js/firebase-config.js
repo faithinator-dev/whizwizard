@@ -28,35 +28,46 @@ if (typeof firebase !== 'undefined') {
         // Check if config is still using placeholders
         if (firebaseConfig.apiKey === 'YOUR_API_KEY_HERE' || 
             firebaseConfig.apiKey.includes('XXXX')) {
-            throw new Error('Firebase configuration not set. Please update firebase-config.js with your actual credentials. See FIREBASE_WEB_CONFIG.md for instructions.');
+            console.warn('⚠️ Firebase configuration not set. Google Sign-In will not work.');
+            console.warn('📖 Please update firebase-config.js with your actual credentials.');
+            console.warn('📖 See FIREBASE_WEB_CONFIG.md for instructions.');
+            // Don't throw error, just warn
+        } else {
+            // Initialize Firebase app
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase initialized successfully');
+            console.log('📦 Project ID:', firebaseConfig.projectId);
+            
+            // Get Auth instance
+            window.firebaseAuth = firebase.auth();
+            
+            // Configure Google Provider
+            window.googleProvider = new firebase.auth.GoogleAuthProvider();
+            window.googleProvider.addScope('profile');
+            window.googleProvider.addScope('email');
+            
+            console.log('✅ Google Sign-In provider configured');
         }
         
-        firebase.initializeApp(firebaseConfig);
-        console.log(' Firebase initialized successfully');
-        console.log(' Project ID:', firebaseConfig.projectId);
-        
-        // Get Auth instance
-        window.firebaseAuth = firebase.auth();
-        
-        // Configure Google Provider
-        window.googleProvider = new firebase.auth.GoogleAuthProvider();
-        window.googleProvider.addScope('profile');
-        window.googleProvider.addScope('email');
-        
-        console.log(' Google Sign-In provider configured');
-        
     } catch (error) {
-        console.error(' Firebase initialization error:', error.message);
-        console.error(' Please check FIREBASE_WEB_CONFIG.md for setup instructions');
+        console.error('❌ Firebase initialization error:', error.message);
+        console.error('📖 Please check FIREBASE_WEB_CONFIG.md for setup instructions');
         
-        // Show user-friendly error
-        if (error.message.includes('api-key-not-valid')) {
-            alert('Firebase configuration error!\n\nPlease update src/js/firebase-config.js with your actual Firebase credentials.\n\nSee FIREBASE_WEB_CONFIG.md for instructions.');
+        // Show user-friendly error only for critical errors
+        if (error.message.includes('api-key-not-valid') || error.message.includes('auth/')) {
+            console.error('🔑 Invalid Firebase credentials. Please update firebase-config.js');
         }
     }
 } else {
-    console.warn(' Firebase SDK not loaded. Make sure Firebase scripts are included in your HTML.');
+    console.warn('⚠️ Firebase SDK not loaded. Make sure Firebase scripts are included in your HTML.');
     console.log('Expected scripts:');
     console.log('- https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
     console.log('- https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js');
 }
+
+// Helper function to check if Firebase is ready
+window.isFirebaseReady = function() {
+    return typeof firebase !== 'undefined' && 
+           typeof window.firebaseAuth !== 'undefined' && 
+           typeof window.googleProvider !== 'undefined';
+};

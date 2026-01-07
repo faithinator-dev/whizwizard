@@ -64,6 +64,16 @@ async function handleGoogleSignIn() {
     ButtonLoader.show(googleBtn);
 
     try {
+        // Check if Firebase is loaded
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK not loaded. Please refresh the page.');
+        }
+        
+        // Check if Firebase app is initialized
+        if (!firebase.apps || firebase.apps.length === 0) {
+            throw new Error('Firebase not initialized. Please check firebase-config.js configuration.');
+        }
+        
         const provider = new firebase.auth.GoogleAuthProvider();
         const result = await firebase.auth().signInWithPopup(provider);
         const user = result.user;

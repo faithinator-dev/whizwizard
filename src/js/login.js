@@ -54,12 +54,23 @@ async function handleGoogleSignIn() {
     ButtonLoader.show(googleBtn);
 
     try {
-        if (typeof firebase === 'undefined' || !window.googleProvider) {
-            throw new Error('Firebase not initialized. Please refresh the page.');
+        // Check if Firebase is loaded
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK not loaded. Please refresh the page.');
+        }
+        
+        // Check if Firebase app is initialized
+        if (!firebase.apps || firebase.apps.length === 0) {
+            throw new Error('Firebase not initialized. Please check firebase-config.js configuration.');
+        }
+        
+        // Check if Google provider is configured
+        if (!window.googleProvider) {
+            throw new Error('Google Sign-In provider not configured. Please check firebase-config.js.');
         }
 
         // Sign in with Google popup
-        const result = await window.firebaseAuth.signInWithPopup(window.googleProvider);
+        const result = await firebase.auth().signInWithPopup(window.googleProvider);
         const user = result.user;
         const idToken = await user.getIdToken();
 
