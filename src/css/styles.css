@@ -191,11 +191,14 @@ body {
     padding: var(--spacing-lg);
     background: var(--accent-navy);
     border-bottom: 2px solid var(--accent-cyan);
-    margin-bottom: var(--spacing-md);
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .mobile-user-info {
     flex: 1;
+    min-width: 0;
 }
 
 .mobile-user-name {
@@ -203,11 +206,15 @@ body {
     font-weight: 600;
     font-size: 1.1rem;
     margin-bottom: var(--spacing-xs);
+    word-wrap: break-word;
 }
 
 .mobile-user-email {
     color: var(--text-secondary);
     font-size: 0.85rem;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .mobile-user-avatar {
@@ -237,6 +244,8 @@ body {
     padding: var(--spacing-md);
     border-top: 2px solid var(--accent-navy);
     margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .mobile-logout .btn {
@@ -244,6 +253,9 @@ body {
     justify-content: center;
     background: var(--danger-color);
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
 }
 
 .mobile-logout .btn:hover {
@@ -1397,20 +1409,24 @@ body {
     /* Show mobile profile and logout sections */
     .mobile-user-profile {
         display: none !important;
+        list-style: none;
     }
     
     .mobile-user-profile.active {
         display: flex !important;
         align-items: center;
         gap: var(--spacing-md);
+        flex-shrink: 0;
     }
     
     .mobile-logout {
         display: none !important;
+        list-style: none;
     }
     
     .mobile-logout.active {
         display: block !important;
+        flex-shrink: 0;
     }
     
     .nav-menu {
@@ -1423,12 +1439,17 @@ body {
         background-color: var(--secondary-navy);
         flex-direction: column;
         padding: 0;
+        margin: 0;
         gap: 0;
         transition: left 0.3s ease;
         overflow-y: auto;
+        overflow-x: hidden;
         border-right: 2px solid var(--accent-navy);
         box-shadow: var(--shadow-lg);
         display: flex;
+        z-index: 999;
+        list-style: none;
+    }
     }
     
     .nav-menu.active {
@@ -1438,6 +1459,8 @@ body {
     .nav-item {
         width: 100%;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin: 0;
+        padding: 0;
     }
     
     .nav-link {
@@ -1447,6 +1470,9 @@ body {
         border-radius: 0;
         justify-content: flex-start;
         gap: var(--spacing-md);
+        margin: 0;
+        display: flex;
+        box-sizing: border-box;
     }
     
     .nav-link:hover {
