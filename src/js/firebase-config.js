@@ -35,18 +35,25 @@ if (typeof firebase !== 'undefined') {
         } else {
             // Initialize Firebase app
             firebase.initializeApp(firebaseConfig);
-            console.log('✅ Firebase initialized successfully');
-            console.log('📦 Project ID:', firebaseConfig.projectId);
             
-            // Get Auth instance
-            window.firebaseAuth = firebase.auth();
-            
-            // Configure Google Provider
-            window.googleProvider = new firebase.auth.GoogleAuthProvider();
-            window.googleProvider.addScope('profile');
-            window.googleProvider.addScope('email');
-            
-            console.log('✅ Google Sign-In provider configured');
+            // Verify initialization succeeded
+            if (firebase.apps && firebase.apps.length > 0) {
+                console.log('✅ Firebase initialized successfully');
+                console.log('📦 Project ID:', firebaseConfig.projectId);
+                
+                // Get Auth instance
+                window.firebaseAuth = firebase.auth();
+                
+                // Configure Google Provider
+                window.googleProvider = new firebase.auth.GoogleAuthProvider();
+                window.googleProvider.addScope('profile');
+                window.googleProvider.addScope('email');
+                
+                console.log('✅ Google Sign-In provider configured');
+            } else {
+                console.error('❌ Firebase app initialization failed');
+                console.warn('⚠️ Please check your Firebase credentials in firebase-config.js');
+            }
         }
         
     } catch (error) {

@@ -37,14 +37,34 @@ function handleLogin(e) {
     // Use API for login
     API.auth.login(email, password)
         .then(data => {
-            QuizUtils.showNotification('Login successful!', 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 500);
+            if (data.success) {
+                // Store user data and token
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token);
+                }
+                QuizUtils.showNotification('Login successful!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } else {
+                // Show specific error message from backend
+                QuizUtils.showNotification(data.message || 'Login failed. Please try again.', 'error');
+                ButtonLoader.hide(submitBtn);
+            }
         })
         .catch(error => {
             console.error('Login error:', error);
-            QuizUtils.showNotification(error.message || 'Login failed. Please try again.', 'error');
+            // Show user-friendly error messages
+            let errorMessage = 'Login failed. Please try again.';
+            if (error.message.includes('User not found') || error.message.includes('not found')) {
+                errorMessage = '❌ No account found with this email. Please sign up first.';
+            } else if (error.message.includes('password') || error.message.includes('Invalid credentials')) {
+                errorMessage = '❌ Incorrect password. Please try again.';
+            } else if (error.message.includes('Email')) {
+                errorMessage = '❌ Invalid email address.';
+            }
+            QuizUtils.showNotification(errorMessage, 'error');
             ButtonLoader.hide(submitBtn);
         });
 }
@@ -104,12 +124,5 @@ async function handleGoogleSignIn() {
         console.error('Google sign-in error:', error);
         QuizUtils.showNotification(error.message || 'Google sign-in failed. Please try again.', 'error');
         ButtonLoader.hide(googleBtn);
-    }
-}
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
-    } else {
-        QuizUtils.showNotification(result.message, 'error');
     }
 }

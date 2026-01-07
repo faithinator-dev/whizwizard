@@ -99,3 +99,20 @@ class ApiClient {
 
 // Create global API instance
 const API = new ApiClient();
+
+// =====================
+// Authentication API
+// =====================
+API.auth = {
+    async login(email, password) {
+        return API.post('/auth/login', { email, password });
+    },
+    
+    async register(name, email, password) {
+        return API.post('/auth/register', { name, email, password });
+    },
+    
+    async googleSignIn(idToken, email, name, photoURL) {
+        return API.post('/auth/google', { idToken, email, name, photoURL });
+    }
+};

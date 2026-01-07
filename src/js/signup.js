@@ -47,14 +47,34 @@ function handleSignup(e) {
     // Use API for registration
     API.auth.register(name, email, password)
         .then(data => {
-            QuizUtils.showNotification('Account created successfully!', 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 500);
+            if (data.success) {
+                // Store user data and token
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token);
+                }
+                QuizUtils.showNotification('Account created successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } else {
+                // Show specific error message from backend
+                QuizUtils.showNotification(data.message || 'Signup failed. Please try again.', 'error');
+                ButtonLoader.hide(submitBtn);
+            }
         })
         .catch(error => {
             console.error('Signup error:', error);
-            QuizUtils.showNotification(error.message || 'Signup failed. Please try again.', 'error');
+            // Show user-friendly error messages
+            let errorMessage = 'Signup failed. Please try again.';
+            if (error.message.includes('already exists') || error.message.includes('already registered')) {
+                errorMessage = '❌ Email already registered. Please login instead.';
+            } else if (error.message.includes('Email')) {
+                errorMessage = '❌ Invalid email address.';
+            } else if (error.message.includes('password')) {
+                errorMessage = '❌ Password must be at least 6 characters.';
+            }
+            QuizUtils.showNotification(errorMessage, 'error');
             ButtonLoader.hide(submitBtn);
         });
 }
