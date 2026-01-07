@@ -22,10 +22,22 @@ function updateAuthNavigation() {
     const navAuth = document.getElementById('nav-auth');
     
     if (Auth.isAuthenticated()) {
-        const user = Auth.getAuthUser();
+        const user = Auth.getUser();
+        
+        // Create avatar HTML
+        let avatarHTML;
+        if (user.avatar) {
+            avatarHTML = `<img src="${user.avatar}" alt="${user.name}" class="user-avatar" onclick="window.location.href='profile.html'">`;
+        } else {
+            const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
+            avatarHTML = `<div class="default-avatar" onclick="window.location.href='profile.html'">${initials}</div>`;
+        }
+        
         navAuth.innerHTML = `
             <div class="user-menu">
+                ${avatarHTML}
                 <span class="user-name">${user.name}</span>
+                ${user.role === 'admin' ? '<a href="admin-dashboard.html" class="btn btn-secondary btn-sm">Admin</a>' : ''}
                 <button onclick="logout()" class="btn btn-secondary btn-sm">Logout</button>
             </div>
         `;

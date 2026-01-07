@@ -7,14 +7,10 @@ let userGrowthChart = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Check if user is admin
-    const currentUser = Auth.getUser();
-    if (!currentUser || currentUser.email !== 'admin@whizwizard.com') {
-        // For now, allow any logged-in user to access
-        // In production, check for admin role
-        if (!Auth.isAuthenticated()) {
-            window.location.href = 'login.html';
-            return;
-        }
+    if (!Auth.isAdmin()) {
+        QuizUtils.showNotification('Access denied. Admin privileges required.', 'error');
+        window.location.href = 'index.html';
+        return;
     }
 
     await loadDashboardData();
@@ -287,6 +283,14 @@ function viewUserDetails(userId) {
 }
 
 function deleteUser(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    
+    // Prevent deleting admin account
+    if (user && user.role === 'admin') {
+        QuizUtils.showNotification('Cannot delete admin account', 'error');
+        return;
+    }
+    
     if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
         return;
     }
@@ -304,6 +308,35 @@ function deleteUser(userId) {
     } catch (error) {
         console.error('Error deleting user:', error);
         QuizUtils.showNotification('Failed to delete user', 'error');
+    }
+}
+
+// Toggle user role (promote/demote admin)
+function toggleUserRole(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const currentUser = Auth.getUser();
+    if (user.id === currentUser.id) {
+        QuizUtils.showNotification('Cannot change your own role', 'error');
+        return;
+    }
+    
+    const newRole = user.role === 'admin' ? 'user' : 'admin';
+    const action = newRole === 'admin' ? 'promote to admin' : 'demote to user';
+    
+    if (!confirm(`Are you sure you want to ${action} ${user.name}?`)) {
+        return;
+    }
+    
+    try {
+        Database.updateUser(userId, { role: newRole });
+        allUsers = Database.getAllUsers();
+        displayUsers(allUsers);
+        QuizUtils.showNotification(`User ${newRole === 'admin' ? 'promoted' : 'demoted'} successfully`, 'success');
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        QuizUtils.showNotification('Failed to update user role', 'error');
     }
 }
 

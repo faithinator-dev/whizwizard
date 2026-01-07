@@ -97,6 +97,25 @@ const Auth = {
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         
         return true;
+    },
+    
+    // Get user for display
+    getUser() {
+        const userStr = localStorage.getItem('user') || localStorage.getItem('currentUser');
+        if (userStr) {
+            try {
+                return JSON.parse(userStr);
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    },
+    
+    // Check if user is admin
+    isAdmin() {
+        const user = this.getUser();
+        return user && user.role === 'admin';
     }
 };
 

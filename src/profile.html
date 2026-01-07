@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - WhizWizard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="assets/icons/logo.svg" alt="WhizWizard Logo" class="logo-icon">
+                <span class="logo-text">WhizWizard</span>
+            </div>
+            
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <img src="assets/icons/home.svg" alt="Home" class="nav-icon">
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="create-quiz.html" class="nav-link">
+                        <img src="assets/icons/create.svg" alt="Create" class="nav-icon">
+                        <span>Create Quiz</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="my-quizzes.html" class="nav-link">
+                        <img src="assets/icons/quiz.svg" alt="Quizzes" class="nav-icon">
+                        <span>My Quizzes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="leaderboard.html" class="nav-link">
+                        <img src="assets/icons/trophy.svg" alt="Leaderboard" class="nav-icon">
+                        <span>Leaderboard</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-auth" id="nav-auth">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1 class="page-title">My Profile</h1>
+                <p class="page-subtitle">Manage your account settings</p>
+            </div>
+
+            <div class="profile-content">
+                <!-- Profile Picture Section -->
+                <div class="profile-picture-section">
+                    <div class="avatar-container">
+                        <div id="current-avatar" class="default-avatar">
+                            <!-- Will be populated by JS -->
+                        </div>
+                        <button class="btn btn-secondary btn-small" onclick="document.getElementById('avatar-upload').click()">
+                            📷 Change Photo
+                        </button>
+                        <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Profile Form -->
+                <form id="profile-form" class="profile-form">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="profile-name" class="form-label">Full Name</label>
+                            <input type="text" id="profile-name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profile-email" class="form-label">Email</label>
+                            <input type="email" id="profile-email" class="form-input" readonly>
+                            <small class="form-help">Email cannot be changed</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profile-role" class="form-label">Role</label>
+                            <input type="text" id="profile-role" class="form-input" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Statistics</h3>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-label">Quizzes Completed</div>
+                                <div class="stat-value" id="stat-completed">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Quizzes Created</div>
+                                <div class="stat-value" id="stat-created">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Total Score</div>
+                                <div class="stat-value" id="stat-score">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Change Password</h3>
+                        <div class="form-group">
+                            <label for="current-password" class="form-label">Current Password</label>
+                            <input type="password" id="current-password" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new-password" class="form-label">New Password</label>
+                            <input type="password" id="new-password" class="form-input" minlength="6">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password" class="form-label">Confirm New Password</label>
+                            <input type="password" id="confirm-password" class="form-input" minlength="6">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            💾 Save Changes
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">
+                            ❌ Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-content {
+            background: var(--secondary-navy);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .profile-picture-section {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-xl);
+            border-bottom: 1px solid var(--accent-navy);
+        }
+
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .avatar-container .default-avatar,
+        .avatar-container .user-avatar {
+            width: 120px;
+            height: 120px;
+            font-size: 3rem;
+        }
+
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .form-section h3 {
+            color: var(--accent-cyan);
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.3rem;
+        }
+
+        .form-help {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: var(--spacing-xs);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .stat-item {
+            background: var(--accent-navy);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-item .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-item .stat-value {
+            color: var(--accent-cyan);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            margin-top: var(--spacing-md);
+        }
+
+        @media (max-width: 480px) {
+            .profile-content {
+                padding: var(--spacing-md);
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script src="js/database.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/mobile-nav.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

@@ -186,6 +186,43 @@ body {
     border-radius: var(--radius-md);
 }
 
+/* User Avatar Styles */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-cyan);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.user-avatar:hover {
+    border-color: var(--accent-blue);
+    transform: scale(1.05);
+}
+
+.default-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: 2px solid var(--accent-cyan);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.default-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
 .auth-buttons {
     display: flex;
     gap: var(--spacing-sm);
@@ -1267,6 +1304,20 @@ body {
         height: 24px;
     }
     
+    /* User profile in nav */
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent-cyan);
+    }
+    
+    .user-menu {
+        flex-direction: row;
+        gap: var(--spacing-sm);
+    }
+    
     /* Hero Section */
     .hero-title {
         font-size: 2rem;
@@ -1425,9 +1476,29 @@ body {
         min-height: 44px; /* Touch-friendly */
     }
     
-    .btn-icon {
-        width: 18px;
-        height: 18px;
+    .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        min-height: 44px; /* Touch-friendly */
+    }
+    
+    /* Hide text on small screens, show icons only */
+    .nav-link span {
+        display: none;
+    }
+    
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .user-name {
+        display: none;
+    }
+    
+    .user-avatar {
+        width: 36px;
+        height: 36px;
     }
     
     /* Quiz Cards */

@@ -9,6 +9,7 @@ class User {
         this.password = data.password;
         this.avatar = data.avatar || null;
         this.authProvider = data.authProvider || 'email'; // 'email' or 'google'
+        this.role = data.role || 'user'; // 'user' or 'admin'
         this.totalScore = data.totalScore || 0;
         this.quizzesCompleted = data.quizzesCompleted || 0;
         this.quizzesCreated = data.quizzesCreated || 0;
@@ -55,6 +56,7 @@ class User {
             name: this.name,
             email: this.email,
             avatar: this.avatar,
+            role: this.role,
             totalScore: this.totalScore,
             quizzesCompleted: this.quizzesCompleted,
             quizzesCreated: this.quizzesCreated,
