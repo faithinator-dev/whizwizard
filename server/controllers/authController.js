@@ -29,6 +29,13 @@ exports.register = async (req, res) => {
         // Check if user exists
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
+            // Check if they registered with Google
+            if (existingUser.authProvider === 'google') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'This email is already registered with Google Sign-In. Please use Google to login.'
+                });
+            }
             return res.status(400).json({
                 success: false,
                 message: 'User already exists with this email'
@@ -198,6 +205,15 @@ exports.googleSignIn = async (req, res) => {
             } catch (error) {
                 console.error('Error updating Firebase Auth user:', error);
             }
+        } else {
+            // User exists - check if they're trying to use Google with an email/password account
+            if (user.authProvider === 'email' && user.password) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'This email is already registered with a password. Please login with your email and password instead.'
+                });
+            }
+            // If they're already a Google user, just log them in (update will happen below)
         }
 
         // Generate custom token

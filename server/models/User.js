@@ -72,6 +72,8 @@ class User {
             email: this.email.toLowerCase(),
             password: this.password,
             avatar: this.avatar,
+            authProvider: this.authProvider,
+            role: this.role,
             totalScore: this.totalScore,
             quizzesCompleted: this.quizzesCompleted,
             quizzesCreated: this.quizzesCreated,
