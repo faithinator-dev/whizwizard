@@ -139,6 +139,39 @@ body {
     gap: var(--spacing-sm);
 }
 
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    z-index: 1001;
+}
+
+.hamburger span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background-color: var(--text-primary);
+    transition: all 0.3s ease;
+    border-radius: 3px;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
 .user-menu {
     display: flex;
     align-items: center;
@@ -1153,15 +1186,24 @@ body {
 }
 
 /* =====================
-   Responsive Design
+   Responsive Design - Mobile First
    ===================== */
+
+/* Tablet and below (1024px) */
 @media (max-width: 1024px) {
+    .nav-container {
+        padding: 0 var(--spacing-md);
+    }
+    
     .hero-content {
         grid-template-columns: 1fr;
+        padding: var(--spacing-lg);
     }
     
     .hero-character {
         order: -1;
+        max-width: 300px;
+        margin: 0 auto;
     }
     
     .question-container {
@@ -1171,41 +1213,111 @@ body {
     .question-character {
         display: none;
     }
+    
+    .stats-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
 }
 
+/* Mobile landscape and below (768px) */
 @media (max-width: 768px) {
+    /* Navigation - Hamburger Menu */
+    .hamburger {
+        display: flex;
+    }
+    
     .nav-menu {
-        gap: var(--spacing-xs);
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background-color: var(--secondary-navy);
+        flex-direction: column;
+        padding: var(--spacing-lg);
+        gap: 0;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        border-top: 2px solid var(--accent-navy);
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-item {
+        width: 100%;
+        border-bottom: 1px solid var(--accent-navy);
     }
     
     .nav-link {
-        padding: var(--spacing-sm);
-        font-size: 0.9rem;
+        width: 100%;
+        padding: var(--spacing-md);
+        font-size: 1.1rem;
+        border-radius: 0;
+        justify-content: flex-start;
     }
     
     .nav-link span {
-        display: none;
+        display: inline;
     }
     
+    .nav-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    /* Hero Section */
     .hero-title {
         font-size: 2rem;
+        line-height: 1.2;
     }
     
-    .stats-container {
-        grid-template-columns: 1fr;
+    .hero-subtitle {
+        font-size: 1rem;
     }
     
-    .filter-buttons {
+    .hero-buttons {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
         justify-content: center;
     }
     
+    /* Stats and Cards */
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .quiz-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Filters */
+    .filter-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        flex: 1 1 auto;
+        min-width: 100px;
+    }
+    
+    /* Forms */
     .form-row {
         grid-template-columns: 1fr;
     }
     
+    /* Leaderboard Podium */
     .podium {
         flex-direction: column;
         align-items: center;
+        gap: var(--spacing-md);
     }
     
     .podium-place {
@@ -1219,34 +1331,241 @@ body {
         order: 0;
     }
     
-    .first .podium-base,
+    .first .podium-base {
+        height: 120px;
+    }
+    
     .second .podium-base,
     .third .podium-base {
         height: 100px;
     }
-}
-
-@media (max-width: 480px) {
-    .main-content {
+    
+    /* Auth Pages */
+    .auth-container {
+        flex-direction: column;
         padding: var(--spacing-md);
     }
     
-    .hero-content,
+    .auth-character {
+        display: none;
+    }
+    
+    .auth-box {
+        padding: var(--spacing-lg);
+    }
+}
+
+/* Mobile portrait (480px) */
+@media (max-width: 480px) {
+    /* Base Layout */
+    :root {
+        --spacing-xs: 0.375rem;
+        --spacing-sm: 0.75rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.25rem;
+        --spacing-xl: 2rem;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    /* Navigation */
+    .nav-container {
+        height: 60px;
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .logo-text {
+        font-size: 1.25rem;
+    }
+    
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .nav-menu {
+        top: 60px;
+        height: calc(100vh - 60px);
+        padding: var(--spacing-md);
+    }
+    
+    .nav-link {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 1rem;
+    }
+    
+    /* Main Content */
+    .main-content {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+    
+    /* Hero Section */
+    .hero-content {
+        padding: var(--spacing-md);
+    }
+    
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .hero-character {
+        max-width: 200px;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        min-height: 44px; /* Touch-friendly */
+    }
+    
+    .btn-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    /* Quiz Cards */
+    .quiz-card {
+        padding: var(--spacing-md);
+    }
+    
+    .quiz-card-title {
+        font-size: 1.1rem;
+    }
+    
+    .quiz-card-description {
+        font-size: 0.85rem;
+    }
+    
+    .quiz-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .quiz-card-footer {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        align-items: stretch;
+    }
+    
+    .quiz-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    /* Forms */
     .quiz-form {
         padding: var(--spacing-md);
     }
     
-    .hero-buttons {
-        flex-direction: column;
+    .form-input,
+    .form-textarea,
+    .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 0.75rem;
     }
     
-    .btn {
+    /* Quiz Taking */
+    .quiz-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .timer {
         width: 100%;
         justify-content: center;
     }
     
-    .character-helper {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .option-btn {
+        padding: var(--spacing-md);
+        min-height: 60px;
+    }
+    
+    /* Results */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: var(--spacing-md);
+    }
+    
+    /* Auth Pages */
+    .auth-container {
+        padding: var(--spacing-sm);
+    }
+    
+    .auth-box {
+        padding: var(--spacing-md);
+    }
+    
+    .auth-title {
+        font-size: 1.5rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .auth-logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* Tables */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        font-size: 0.85rem;
+    }
+    
+    /* Modals */
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        margin: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    
+    /* Hide decorative elements on small screens */
+    .character-helper,
+    .decorative-element {
         display: none;
+    }
+}
+
+/* Small phones (360px) */
+@media (max-width: 360px) {
+    .logo-text {
+        font-size: 1.1rem;
+    }
+    
+    .hero-title {
+        font-size: 1.25rem;
+    }
+    
+    .btn {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.85rem;
+    }
+    
+    .quiz-card {
+        padding: var(--spacing-sm);
     }
 }
 
