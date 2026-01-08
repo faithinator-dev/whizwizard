@@ -3,7 +3,10 @@
 // =====================
 
 const API_CONFIG = {
-    baseURL: 'https://whizwizard-backend.onrender.com/api',
+    // Use localhost when developing, Render URL for production
+    baseURL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:3000/api' 
+        : 'https://whizwizard-backend.onrender.com/api',
     timeout: 10000
 };
 
