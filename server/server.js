@@ -17,7 +17,7 @@ initializeFirebase();
 
 // Middleware
 app.use(cors({
-    origin: process.env.CORS_ORIGIN.split(','),
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
     credentials: true
 }));
 app.use(express.json());
