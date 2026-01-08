@@ -1,6 +1,6 @@
 # WhizWizard - Live Quiz Hosting Platform
 
-A fully functional multiplayer quiz hosting platform with **Firebase/Firestore database**, Node.js/Express backend, and modern frontend. Features Firebase authentication, Kahoot-style live quiz functionality with real-time leaderboards, and a beautiful navy blue theme with smooth animations.
+A fully functional multiplayer quiz hosting platform with **Firebase/Firestore database**, Node.js/Express backend, and modern frontend. Features Firebase authentication, Kahoot-style live quiz functionality with real-time leaderboards, **Nigerian grading system** for educational institutions, and a beautiful navy blue theme with smooth animations.
 
 ## Features
 
@@ -16,6 +16,15 @@ A fully functional multiplayer quiz hosting platform with **Firebase/Firestore d
 - **Timer System**: Configurable time limits for each question
 - **Edit & Delete**: Full CRUD operations for quiz management
 - **Live Sessions**: Start live quiz sessions with join codes
+- **Nigerian Grading System**: Optional grading for Secondary School, Polytechnic, and University levels
+
+### Nigerian Grading System 🎓
+- **Secondary School**: WAEC/NECO grading (A1-F9 with points)
+- **Polytechnic**: ND/HND grading (A-F with GPA 0.0-5.0)
+- **University**: Undergraduate grading (First Class to Fail with GPA)
+- **Automatic Calculation**: Grades calculated based on percentage scores
+- **Visual Display**: Color-coded grade badges with descriptions
+- **Flexible**: Optional - can be enabled per quiz
 
 ### Live Quiz (Kahoot-style)
 - **Join Codes**: 6-character alphanumeric codes for joining live quizzes
@@ -31,6 +40,7 @@ A fully functional multiplayer quiz hosting platform with **Firebase/Firestore d
 - **Progress Tracking**: Visual progress bar and question counter
 - **Timer Countdown**: Visual timer with warning indicators
 - **Instant Results**: Detailed score breakdown and statistics
+- **Grade Display**: Shows Nigerian grade if enabled for the quiz
 
 ### Leaderboard
 - **Top Performers**: Podium display for top 3 users
@@ -38,10 +48,10 @@ A fully functional multiplayer quiz hosting platform with **Firebase/Firestore d
 - **User Stats**: Track attempts, scores, and averages
 
 ### Database System
-- **MongoDB**: Production-ready NoSQL database
-- **Complete CRUD**: Create, Read, Update, Delete operations with Mongoose ODM
+- **Firebase/Firestore**: Production-ready NoSQL database
+- **Complete CRUD**: Create, Read, Update, Delete operations
 - **Statistics**: Real-time stats for quizzes, users, and completions
-- **Result History**: Track all quiz attempts and scores
+- **Result History**: Track all quiz attempts, scores, and grades
 - **Live Rooms**: Room management with automatic cleanup (24hr TTL)
 - **Persistent**: Data survives browser restarts and works across devices
 
@@ -106,6 +116,8 @@ Prerequisites
 ### Installation
 
 **See [SETUP_REAL_DATABASE.md](SETUP_REAL_DATABASE.md) for complete setup guide!**
+
+**See [NG_GRADING_SYSTEM.md](NG_GRADING_SYSTEM.md) for Nigerian Grading System documentation!**
 
 **Quick Start:**
 

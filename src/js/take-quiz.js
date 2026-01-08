@@ -254,7 +254,7 @@ function calculateQuizRanking(quizId, userScore) {
 }
 
 // Show results
-function showResults(score, correct, wrong, timeTaken, ranking) {
+async function showResults(score, correct, wrong, timeTaken, ranking) {
     // Hide quiz container
     document.querySelector('.quiz-container').classList.add('hidden');
     
@@ -262,11 +262,34 @@ function showResults(score, correct, wrong, timeTaken, ranking) {
     const resultContainer = document.getElementById('result-container');
     resultContainer.classList.remove('hidden');
     
+    // Calculate percentage
+    const totalQuestions = currentQuiz.questions.length;
+    const percentage = (correct / totalQuestions) * 100;
+    
     // Update result values
     document.getElementById('score-value').textContent = `${score}%`;
     document.getElementById('correct-answers').textContent = correct;
     document.getElementById('wrong-answers').textContent = wrong;
     document.getElementById('time-taken').textContent = QuizUtils.formatTime(timeTaken);
+    
+    // Show percentage
+    const percentageItem = document.getElementById('percentage-item');
+    const percentageValue = document.getElementById('percentage-value');
+    percentageItem.style.display = 'flex';
+    percentageValue.textContent = `${percentage.toFixed(1)}%`;
+    
+    // Display grade if quiz has grading level
+    if (currentQuiz.gradingLevel && typeof ngGrading !== 'undefined') {
+        try {
+            const grade = await ngGrading.calculateGrade(percentage, currentQuiz.gradingLevel);
+            if (grade) {
+                const gradeDisplay = document.getElementById('grade-display');
+                gradeDisplay.innerHTML = ngGrading.createGradeBadge(grade);
+            }
+        } catch (error) {
+            console.error('Error displaying grade:', error);
+        }
+    }
     
     // Add ranking display
     const statsGrid = document.querySelector('.stats-grid');

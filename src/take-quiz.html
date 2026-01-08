@@ -80,6 +80,8 @@
                         <div class="score-label">Score</div>
                     </div>
                 </div>
+                <!-- Grade display (will be populated by JavaScript if applicable) -->
+                <div id="grade-display" class="grade-display-container" style="margin: 20px 0;"></div>
                 <div class="result-details">
                     <div class="result-item">
                         <img src="assets/icons/checkmark.svg" alt="Correct" class="result-icon">
@@ -92,6 +94,10 @@
                     <div class="result-item">
                         <img src="assets/icons/timer.svg" alt="Time" class="result-icon">
                         <span>Time: <strong id="time-taken">0:00</strong></span>
+                    </div>
+                    <div class="result-item" id="percentage-item" style="display: none;">
+                        <img src="assets/icons/chart.svg" alt="Percentage" class="result-icon">
+                        <span>Percentage: <strong id="percentage-value">0%</strong></span>
                     </div>
                 </div>
                 <div class="result-actions">
@@ -110,6 +116,7 @@
 
     <script src="js/database.js"></script>
     <script src="js/quiz.js"></script>
+    <script src="js/ng-grading.js"></script>
     <script src="js/take-quiz.js"></script>
 </body>
 </html>
