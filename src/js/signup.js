@@ -77,13 +77,24 @@ function handleSignup(e) {
             console.error('Signup error:', error);
             // Show user-friendly error messages
             let errorMessage = 'Signup failed. Please try again.';
-            if (error.message.includes('already exists') || error.message.includes('already registered')) {
-                errorMessage = '❌ Email already registered. Please login instead.';
-            } else if (error.message.includes('Email')) {
-                errorMessage = '❌ Invalid email address.';
-            } else if (error.message.includes('password')) {
-                errorMessage = '❌ Password must be at least 6 characters.';
+            
+            if (error.message) {
+                if (error.message.includes('already exists') || error.message.includes('already registered')) {
+                    errorMessage = '❌ Email already registered. Please login instead.';
+                } else if (error.message.includes('Google Sign-In')) {
+                    errorMessage = '❌ This email is registered with Google. Use Google Sign-In.';
+                } else if (error.message.includes('Email')) {
+                    errorMessage = '❌ Invalid email address.';
+                } else if (error.message.includes('password') || error.message.includes('Password')) {
+                    errorMessage = '❌ Password must be at least 6 characters.';
+                } else if (error.message.includes('fetch') || error.message.includes('network')) {
+                    errorMessage = '❌ Cannot connect to server. Make sure backend is running.';
+                } else {
+                    // Show the actual error message from backend
+                    errorMessage = '❌ ' + error.message;
+                }
             }
+            
             QuizUtils.showNotification(errorMessage, 'error');
             ButtonLoader.hide(submitBtn);
         });

@@ -64,13 +64,22 @@ function handleLogin(e) {
             console.error('Login error:', error);
             // Show user-friendly error messages
             let errorMessage = 'Login failed. Please try again.';
-            if (error.message.includes('User not found') || error.message.includes('not found')) {
-                errorMessage = '❌ No account found with this email. Please sign up first.';
-            } else if (error.message.includes('password') || error.message.includes('Invalid credentials')) {
-                errorMessage = '❌ Incorrect password. Please try again.';
-            } else if (error.message.includes('Email')) {
-                errorMessage = '❌ Invalid email address.';
+            
+            if (error.message) {
+                if (error.message.includes('User not found') || error.message.includes('not found')) {
+                    errorMessage = '❌ No account found with this email. Please sign up first.';
+                } else if (error.message.includes('password') || error.message.includes('Invalid credentials')) {
+                    errorMessage = '❌ Incorrect password. Please try again.';
+                } else if (error.message.includes('Email')) {
+                    errorMessage = '❌ Invalid email address.';
+                } else if (error.message.includes('fetch') || error.message.includes('network')) {
+                    errorMessage = '❌ Cannot connect to server. Make sure backend is running.';
+                } else {
+                    // Show the actual error message from backend
+                    errorMessage = '❌ ' + error.message;
+                }
             }
+            
             QuizUtils.showNotification(errorMessage, 'error');
             ButtonLoader.hide(submitBtn);
         });

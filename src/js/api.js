@@ -55,16 +55,26 @@ class ApiClient {
         };
 
         try {
+            console.log('API Request:', { url, method: config.method || 'GET' });
             const response = await fetch(url, config);
-            const data = await response.json();
+            
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                console.error('Failed to parse response:', e);
+                throw new Error('Server returned invalid response');
+            }
+
+            console.log('API Response:', { url, status: response.status, data });
 
             if (!response.ok) {
-                throw new Error(data.message || 'Request failed');
+                throw new Error(data.message || data.error || 'Request failed');
             }
 
             return data;
         } catch (error) {
-            console.error('API Request Error:', error);
+            console.error('API Request Error:', { url, error: error.message });
             throw error;
         }
     }
