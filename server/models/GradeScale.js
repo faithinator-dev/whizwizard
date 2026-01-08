@@ -113,8 +113,10 @@ class GradeScale {
             }
         }
 
-        // Default to lowest grade if not found
-        const lowestGrade = scale.scales[scale.scales.length - 1];
+        // Fallback: find the grade with the lowest minimum score (fail grade)
+        const lowestGrade = scale.scales.reduce((lowest, current) => 
+            (current.min < lowest.min) ? current : lowest, scale.scales[0]);
+        
         return {
             grade: lowestGrade.grade,
             description: lowestGrade.description,

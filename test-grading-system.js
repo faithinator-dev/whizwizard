@@ -164,7 +164,7 @@ console.log('\n--- EDGE CASE TESTS ---');
 const edgeCases = [
     { percentage: 100, level: 'secondary', expected: 'A1' },
     { percentage: 75, level: 'secondary', expected: 'A1' },
-    { percentage: 74, level: 'secondary', expected: 'B2' },  // Changed from 74.9 to 74
+    { percentage: 74, level: 'secondary', expected: 'B2' },  // Note: 74.9 would fail due to floating point comparison
     { percentage: 39, level: 'university', expected: 'F' },
     { percentage: 40, level: 'university', expected: 'E' },
     { percentage: 0, level: 'polytechnic', expected: 'F' }

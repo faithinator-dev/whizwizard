@@ -5,9 +5,19 @@
 
 class NGGradingSystem {
     constructor() {
-        this.API_BASE_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api'
-            : '/api';
+        // Determine API base URL based on environment
+        // Supports localhost:3000 or any other port if specified
+        const isLocalhost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1';
+        
+        if (isLocalhost) {
+            // Try to use the same port as the frontend, or default to 3000
+            const port = window.location.port || '3000';
+            this.API_BASE_URL = `http://localhost:${port === '8000' ? '3000' : port}/api`;
+        } else {
+            // Production: use relative path
+            this.API_BASE_URL = '/api';
+        }
     }
 
     /**
