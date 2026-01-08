@@ -105,6 +105,22 @@
                             <input type="number" id="quiz-timer" class="form-input" placeholder="30" min="10" max="300" required>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="grading-level" class="form-label">
+                            <img src="assets/icons/trophy.svg" alt="Grading" class="form-icon" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
+                            Nigerian Grading System (Optional)
+                        </label>
+                        <select id="grading-level" class="form-select">
+                            <option value="">No Grading (Default)</option>
+                            <option value="secondary">Secondary School (WAEC/NECO)</option>
+                            <option value="polytechnic">Polytechnic (ND/HND)</option>
+                            <option value="university">University (Undergraduate)</option>
+                        </select>
+                        <small class="form-text" style="display: block; margin-top: 5px; color: rgba(255,255,255,0.7); font-size: 0.9em;">
+                            Select the educational level to automatically calculate grades based on Nigerian standards
+                        </small>
+                    </div>
                 </div>
 
                 <div class="form-section">
@@ -145,6 +161,7 @@
     <script src="js/database.js"></script>
     <script src="js/quiz.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/ng-grading.js"></script>
     <script src="js/button-loader.js"></script>
     <script src="js/mobile-nav.js"></script>
     <script src="js/create-quiz.js"></script>

@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const quizRoutes = require('./routes/quizzes');
 const resultRoutes = require('./routes/results');
 const liveRoomRoutes = require('./routes/liveRooms');
+const gradeRoutes = require('./routes/grades');
 
 // Initialize express
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/results', resultRoutes);
 app.use('/api/live-rooms', liveRoomRoutes);
+app.use('/api/grades', gradeRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

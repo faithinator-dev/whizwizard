@@ -172,6 +172,7 @@ function handleFormSubmit(e) {
     const description = document.getElementById('quiz-description').value.trim();
     const category = document.getElementById('quiz-category').value;
     const timer = document.getElementById('quiz-timer').value;
+    const gradingLevel = document.getElementById('grading-level').value || null;
     
     // Get questions
     const questions = [];
@@ -198,7 +199,8 @@ function handleFormSubmit(e) {
         description,
         category,
         timer,
-        questions
+        questions,
+        gradingLevel
     };
     
     // Validate quiz data
