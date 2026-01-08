@@ -11,6 +11,8 @@ class Result {
         this.totalQuestions = data.totalQuestions;
         this.timeTaken = data.timeTaken;
         this.answers = data.answers || [];
+        this.grade = data.grade || null; // Grade object with grade, description, points/gpa
+        this.percentage = data.percentage || 0;
         this.createdAt = data.createdAt || new Date();
         this.updatedAt = data.updatedAt || new Date();
     }
@@ -59,6 +61,8 @@ class Result {
             totalQuestions: this.totalQuestions,
             timeTaken: this.timeTaken,
             answers: this.answers,
+            grade: this.grade,
+            percentage: this.percentage,
             updatedAt: new Date()
         };
 

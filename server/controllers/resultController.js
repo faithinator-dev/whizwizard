@@ -1,6 +1,7 @@
 const Result = require('../models/Result');
 const Quiz = require('../models/Quiz');
 const User = require('../models/User');
+const GradeScale = require('../models/GradeScale');
 
 // @desc    Submit quiz result
 // @route   POST /api/results
@@ -29,6 +30,15 @@ exports.submitResult = async (req, res) => {
             timeTaken,
             answers
         };
+
+        // Calculate percentage and grade if quiz has grading level
+        const percentage = (correctAnswers / totalQuestions) * 100;
+        resultData.percentage = percentage;
+
+        if (quiz.gradingLevel) {
+            const grade = GradeScale.calculateGrade(percentage, quiz.gradingLevel);
+            resultData.grade = grade;
+        }
 
         const validationErrors = Result.validate(resultData);
         if (validationErrors.length > 0) {

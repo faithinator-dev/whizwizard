@@ -11,6 +11,7 @@ class Quiz {
         this.createdBy = data.createdBy;
         this.attempts = data.attempts || 0;
         this.averageScore = data.averageScore || 0;
+        this.gradingLevel = data.gradingLevel || null; // 'secondary', 'polytechnic', 'university', or null
         this.createdAt = data.createdAt || new Date();
         this.updatedAt = data.updatedAt || new Date();
     }
@@ -71,6 +72,7 @@ class Quiz {
             createdBy: this.createdBy,
             attempts: this.attempts,
             averageScore: this.averageScore,
+            gradingLevel: this.gradingLevel,
             updatedAt: new Date()
         };
 
