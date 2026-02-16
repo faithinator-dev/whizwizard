@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function handleSignup(e) {
+async function handleSignup(e) {
     e.preventDefault();
 
     const name = document.getElementById('signup-name').value.trim();
@@ -54,50 +54,35 @@ function handleSignup(e) {
     // Show loading state
     ButtonLoader.show(submitBtn);
 
-    // Use API for registration
-    API.auth.register(name, email, password)
-        .then(data => {
-            if (data.success) {
-                // Store user data and token
-                localStorage.setItem('currentUser', JSON.stringify(data.user));
-                if (data.token) {
-                    localStorage.setItem('authToken', data.token);
-                }
-                QuizUtils.showNotification('Account created successfully!', 'success');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 500);
-            } else {
-                // Show specific error message from backend
-                QuizUtils.showNotification(data.message || 'Signup failed. Please try again.', 'error');
-                ButtonLoader.hide(submitBtn);
-            }
-        })
-        .catch(error => {
-            console.error('Signup error:', error);
-            // Show user-friendly error messages
-            let errorMessage = 'Signup failed. Please try again.';
+    try {
+        // Use Firebase service for registration
+        const result = await FirebaseService.auth.register(name, email, password);
+
+        if (result.success) {
+            QuizUtils.showNotification('Account created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        } else {
+            // Show specific error message
+            let errorMessage = result.message || 'Signup failed. Please try again.';
             
-            if (error.message) {
-                if (error.message.includes('already exists') || error.message.includes('already registered')) {
-                    errorMessage = '❌ Email already registered. Please login instead.';
-                } else if (error.message.includes('Google Sign-In')) {
-                    errorMessage = '❌ This email is registered with Google. Use Google Sign-In.';
-                } else if (error.message.includes('Email')) {
-                    errorMessage = '❌ Invalid email address.';
-                } else if (error.message.includes('password') || error.message.includes('Password')) {
-                    errorMessage = '❌ Password must be at least 6 characters.';
-                } else if (error.message.includes('fetch') || error.message.includes('network')) {
-                    errorMessage = '❌ Cannot connect to server. Make sure backend is running.';
-                } else {
-                    // Show the actual error message from backend
-                    errorMessage = '❌ ' + error.message;
-                }
+            if (errorMessage.includes('email-already-in-use')) {
+                errorMessage = 'Email already registered. Please login instead.';
+            } else if (errorMessage.includes('invalid-email')) {
+                errorMessage = 'Invalid email address.';
+            } else if (errorMessage.includes('weak-password')) {
+                errorMessage = 'Password must be at least 6 characters.';
             }
             
             QuizUtils.showNotification(errorMessage, 'error');
             ButtonLoader.hide(submitBtn);
-        });
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        QuizUtils.showNotification('Signup failed. Please try again.', 'error');
+        ButtonLoader.hide(submitBtn);
+    }
 }
 
 async function handleGoogleSignIn() {
@@ -105,50 +90,16 @@ async function handleGoogleSignIn() {
     ButtonLoader.show(googleBtn);
 
     try {
-        // Check if Firebase is loaded
-        if (typeof firebase === 'undefined') {
-            throw new Error('Firebase SDK not loaded. Please refresh the page.');
-        }
-        
-        // Check if Firebase app is initialized
-        if (!firebase.apps || firebase.apps.length === 0) {
-            throw new Error('Firebase not initialized. Please check firebase-config.js configuration.');
-        }
-        
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await firebase.auth().signInWithPopup(provider);
-        const user = result.user;
+        // Use Firebase service for Google sign-in
+        const result = await FirebaseService.auth.googleSignIn();
 
-        // Get ID token
-        const idToken = await user.getIdToken();
-
-        // Send to backend
-        const response = await fetch(`${API_CONFIG.baseURL}/auth/google`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                idToken: idToken,
-                name: user.displayName,
-                email: user.email,
-                photoURL: user.photoURL
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            // Store token and user data
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-
+        if (result.success) {
             QuizUtils.showNotification('Signed up successfully with Google!', 'success');
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 500);
         } else {
-            throw new Error(data.message || 'Google Sign-In failed');
+            throw new Error(result.message || 'Google Sign-In failed');
         }
     } catch (error) {
         console.error('Google Sign-In error:', error);
