@@ -6,7 +6,7 @@ const Auth = {
     // Check if user is authenticated
     isAuthenticated() {
         const currentUser = Database.getCurrentUser();
-        return currentUser && currentUser.email && currentUser.email !== 'guest@whizwizard.com';
+        return currentUser && currentUser.email;
     },
 
     // Get current authenticated user
@@ -65,16 +65,22 @@ const Auth = {
     },
 
     // Logout user
-    logout() {
-        // Create guest user
-        const guestUser = {
-            id: Database.generateId(),
-            name: 'Guest User',
-            email: 'guest@whizwizard.com',
-            createdAt: new Date().toISOString()
-        };
+    async logout() {
+        try {
+            // Sign out from Firebase if available
+            if (window.auth && window.firebaseConfigured) {
+                await window.auth.signOut();
+                console.log('✅ Signed out from Firebase');
+            }
+        } catch (error) {
+            console.error('Error signing out from Firebase:', error);
+        }
         
-        localStorage.setItem('currentUser', JSON.stringify(guestUser));
+        // Clear localStorage
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('user');
+        
+        // Redirect to login
         window.location.href = 'login.html';
     },
 

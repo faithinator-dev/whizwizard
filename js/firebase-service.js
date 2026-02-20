@@ -145,7 +145,7 @@ const FirebaseService = {
         // Check if authenticated
         isAuthenticated() {
             const user = this.getCurrentUser();
-            return user && user.email && user.email !== 'guest@whizwizard.com';
+            return user && user.email;
         },
 
         // Update profile

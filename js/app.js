@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup filter buttons
     setupFilters();
+    
+    // Listen for automatic login events from Firebase
+    window.addEventListener('userLoggedIn', function(event) {
+        console.log('🔄 User auto-logged in, updating UI:', event.detail.email);
+        updateAuthNavigation();
+        loadStatistics();
+        loadQuizzes('all');
+    });
 });
 
 // Update authentication navigation
@@ -26,10 +34,26 @@ function updateAuthNavigation() {
     if (Auth.isAuthenticated()) {
         const user = Auth.getUser();
         
+        // Make sure user exists
+        if (!user) {
+            // User is logged out, show login/signup buttons
+            navAuth.innerHTML = `
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-secondary btn-sm">Login</a>
+                    <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+                </div>
+            `;
+            
+            // Hide mobile sections
+            if (mobileProfile) mobileProfile.classList.remove('active');
+            if (mobileLogout) mobileLogout.classList.remove('active');
+            return;
+        }
+        
         // Create avatar HTML
         let avatarHTML;
-        if (user.avatar) {
-            avatarHTML = `<img src="${user.avatar}" alt="${user.name}" class="user-avatar" onclick="window.location.href='profile.html'">`;
+        if (user.avatar || user.photoURL) {
+            avatarHTML = `<img src="${user.avatar || user.photoURL}" alt="${user.name}" class="user-avatar" onclick="window.location.href='profile.html'">`;
         } else {
             const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
             avatarHTML = `<div class="default-avatar" onclick="window.location.href='profile.html'">${initials}</div>`;
@@ -48,8 +72,8 @@ function updateAuthNavigation() {
         // Mobile menu profile section
         if (mobileProfile) {
             let mobileAvatarHTML;
-            if (user.avatar) {
-                mobileAvatarHTML = `<img src="${user.avatar}" alt="${user.name}" class="mobile-user-avatar">`;
+            if (user.avatar || user.photoURL) {
+                mobileAvatarHTML = `<img src="${user.avatar || user.photoURL}" alt="${user.name}" class="mobile-user-avatar">`;
             } else {
                 const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
                 mobileAvatarHTML = `<div class="mobile-default-avatar">${initials}</div>`;

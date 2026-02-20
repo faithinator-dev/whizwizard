@@ -24,8 +24,8 @@ function loadProfile() {
 
     // Display avatar
     const avatarContainer = document.getElementById('current-avatar');
-    if (user.avatar) {
-        avatarContainer.innerHTML = `<img src="${user.avatar}" alt="${user.name}" class="user-avatar" style="width: 120px; height: 120px;">`;
+    if (user.avatar || user.photoURL) {
+        avatarContainer.innerHTML = `<img src="${user.avatar || user.photoURL}" alt="${user.name}" class="user-avatar" style="width: 120px; height: 120px;">`;
     } else {
         const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
         avatarContainer.textContent = initials;

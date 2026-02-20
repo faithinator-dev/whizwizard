@@ -3,26 +3,46 @@
 // =====================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if already logged in
-    if (Auth.isAuthenticated()) {
-        window.location.href = 'index.html';
-        return;
-    }
-
-    // Setup form submission
-    document.getElementById('signup-form').addEventListener('submit', handleSignup);
-    
-    // Setup Google Sign-In (hide if Firebase not configured)
-    const googleBtn = document.getElementById('google-signin-btn');
-    if (googleBtn) {
-        // Check if Firebase is configured
-        if (window.firebaseConfigured === false) {
-            // Hide Google Sign-In button
-            googleBtn.style.display = 'none';
-            console.log('ℹ️ Google Sign-In disabled - Firebase not configured');
-        } else {
-            googleBtn.addEventListener('click', handleGoogleSignIn);
+    // Wait for Firebase to initialize before checking auth
+    const checkAuthAndInit = () => {
+        if (window.isFirebaseReady && window.isFirebaseReady()) {
+            // Check if user is already authenticated via Firebase
+            const currentFirebaseUser = window.auth.currentUser;
+            if (currentFirebaseUser) {
+                console.log('✅ User already logged in, redirecting...');
+                window.location.href = 'index.html';
+                return;
+            }
         }
+        
+        // Check localStorage as fallback
+        if (Auth.isAuthenticated()) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Setup form submission
+        document.getElementById('signup-form').addEventListener('submit', handleSignup);
+        
+        // Setup Google Sign-In (hide if Firebase not configured)
+        const googleBtn = document.getElementById('google-signin-btn');
+        if (googleBtn) {
+            // Check if Firebase is configured
+            if (window.firebaseConfigured === false) {
+                // Hide Google Sign-In button
+                googleBtn.style.display = 'none';
+                console.log('ℹ️ Google Sign-In disabled - Firebase not configured');
+            } else {
+                googleBtn.addEventListener('click', handleGoogleSignIn);
+            }
+        }
+    };
+    
+    // Wait a moment for Firebase to initialize
+    if (window.firebaseConfigured) {
+        checkAuthAndInit();
+    } else {
+        setTimeout(checkAuthAndInit, 500);
     }
 });
 

@@ -22,8 +22,8 @@ function updateAuthNavigation() {
     
     // Create avatar HTML
     let avatarHTML;
-    if (user.avatar) {
-        avatarHTML = `<img src="${user.avatar}" alt="${user.name}" class="user-avatar" onclick="window.location.href='profile.html'">`;
+    if (user.avatar || user.photoURL) {
+        avatarHTML = `<img src="${user.avatar || user.photoURL}" alt="${user.name}" class="user-avatar" onclick="window.location.href='profile.html'">`;
     } else {
         const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
         avatarHTML = `<div class="default-avatar" onclick="window.location.href='profile.html'">${initials}</div>`;
@@ -42,8 +42,8 @@ function updateAuthNavigation() {
     // Mobile menu profile section
     if (mobileProfile) {
         let mobileAvatarHTML;
-        if (user.avatar) {
-            mobileAvatarHTML = `<img src="${user.avatar}" alt="${user.name}" class="mobile-user-avatar">`;
+        if (user.avatar || user.photoURL) {
+            mobileAvatarHTML = `<img src="${user.avatar || user.photoURL}" alt="${user.name}" class="mobile-user-avatar">`;
         } else {
             const initials = user.name ? user.name.substring(0, 2).toUpperCase() : 'U';
             mobileAvatarHTML = `<div class="mobile-default-avatar">${initials}</div>`;

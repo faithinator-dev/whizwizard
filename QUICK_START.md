@@ -1,8 +1,12 @@
 # WhizWizard Live - Quick Start Guide
 
-## 🚀 What's New - Live Quiz Features!
+## 🎯 Frontend-Only Application (No Backend Required!)
 
-Your quiz platform now supports **Kahoot-style live multiplayer quizzes**!
+Your quiz platform runs entirely on **Firebase** - no Node.js backend server needed!
+
+## 🚀 What's Included - Live Quiz Features!
+
+Your quiz platform supports **Kahoot-style live multiplayer quizzes**!
 
 ### Key Features Added
 

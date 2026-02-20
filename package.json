@@ -1,11 +1,15 @@
 {
   "name": "whizwizard",
-  "version": "1.0.0",
-  "description": "Firebase-powered live quiz platform (frontend only)",
+  "version": "2.0.0",
+  "description": "Firebase-powered live quiz platform (frontend only - no backend required)",
   "scripts": {
-    "serve": "npx live-server src"
+    "start": "npx live-server",
+    "serve": "npx live-server"
   },
-  "keywords": ["quiz", "live", "kahoot", "firebase"],
+  "keywords": ["quiz", "live", "kahoot", "firebase", "frontend", "spa"],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
 }

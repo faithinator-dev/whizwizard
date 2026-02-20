@@ -15,17 +15,7 @@ const Database = {
         if (!localStorage.getItem('results')) {
             localStorage.setItem('results', JSON.stringify([]));
         }
-        if (!localStorage.getItem('currentUser')) {
-            // Create default user
-            const defaultUser = {
-                id: this.generateId(),
-                name: 'Guest User',
-                email: 'guest@whizwizard.com',
-                createdAt: new Date().toISOString()
-            };
-            localStorage.setItem('currentUser', JSON.stringify(defaultUser));
-            this.saveUser(defaultUser);
-        }
+        // No guest account - users must login or signup
     },
 
     // Generate unique ID
