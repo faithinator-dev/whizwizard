@@ -4,25 +4,35 @@
 // =====================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication and update navigation
-    updateAuthNavigation();
+    // Wait for Firebase to be ready before loading data
+    const initializeApp = () => {
+        if (window.isFirebaseReady && window.isFirebaseReady()) {
+            // Check authentication and update navigation
+            updateAuthNavigation();
+            
+            // Load statistics
+            loadStatistics();
+            
+            // Load quizzes
+            loadQuizzes('all');
+            
+            // Setup filter buttons
+            setupFilters();
+            
+            // Listen for automatic login events from Firebase
+            window.addEventListener('userLoggedIn', function(event) {
+                console.log('🔄 User auto-logged in, updating UI:', event.detail.email);
+                updateAuthNavigation();
+                loadStatistics();
+                loadQuizzes('all');
+            });
+        } else {
+            // Wait a bit and try again
+            setTimeout(initializeApp, 100);
+        }
+    };
     
-    // Load statistics
-    loadStatistics();
-    
-    // Load quizzes
-    loadQuizzes('all');
-    
-    // Setup filter buttons
-    setupFilters();
-    
-    // Listen for automatic login events from Firebase
-    window.addEventListener('userLoggedIn', function(event) {
-        console.log('🔄 User auto-logged in, updating UI:', event.detail.email);
-        updateAuthNavigation();
-        loadStatistics();
-        loadQuizzes('all');
-    });
+    initializeApp();
 });
 
 // Update authentication navigation
@@ -124,64 +134,101 @@ function logout() {
     window.location.reload();
 }
 
-// Load statistics
-function loadStatistics() {
-    const totalQuizzes = Database.getTotalQuizzes();
-    const totalUsers = Database.getTotalUsers();
-    const totalCompleted = Database.getTotalCompleted();
-    
-    document.getElementById('total-quizzes').textContent = totalQuizzes;
-    document.getElementById('total-users').textContent = totalUsers;
-    document.getElementById('total-completed').textContent = totalCompleted;
+// Load statistics from Firebase
+async function loadStatistics() {
+    try {
+        // Count quizzes
+        const quizzesSnapshot = await db.collection('quizzes').get();
+        const totalQuizzes = quizzesSnapshot.size;
+        
+        // Count users
+        const usersSnapshot = await db.collection('users').get();
+        const totalUsers = usersSnapshot.size;
+        
+        // Count completed results
+        const resultsSnapshot = await db.collection('results').get();
+        const totalCompleted = resultsSnapshot.size;
+        
+        document.getElementById('total-quizzes').textContent = totalQuizzes;
+        document.getElementById('total-users').textContent = totalUsers;
+        document.getElementById('total-completed').textContent = totalCompleted;
+    } catch (error) {
+        console.error('Error loading statistics:', error);
+        // Show 0 if error
+        document.getElementById('total-quizzes').textContent = '0';
+        document.getElementById('total-users').textContent = '0';
+        document.getElementById('total-completed').textContent = '0';
+    }
 }
 
-// Load quizzes
-function loadQuizzes(category = 'all') {
+// Load quizzes from Firebase
+async function loadQuizzes(category = 'all') {
     const quizzesContainer = document.getElementById('quizzes-container');
-    const quizzes = Database.getQuizzesByCategory(category);
     
-    quizzesContainer.innerHTML = '';
+    // Show loading state
+    quizzesContainer.innerHTML = `
+        <div class="loading-state" style="grid-column: 1 / -1; text-align: center; padding: var(--spacing-xl);">
+            <div class="loading-spinner"></div>
+            <p>Loading quizzes...</p>
+        </div>
+    `;
     
-    if (quizzes.length === 0) {
+    try {
+        // Fetch quizzes from Firebase
+        const quizzes = await FirebaseService.quizzes.getByCategory(category);
+        
+        quizzesContainer.innerHTML = '';
+        
+        if (quizzes.length === 0) {
+            quizzesContainer.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <img src="assets/characters/empty-character.svg" alt="No Quizzes" class="empty-character animated-float">
+                    <h3 class="empty-title">No Quizzes Available</h3>
+                    <p class="empty-text">Be the first to create a quiz!</p>
+                    <a href="create-quiz.html" class="btn btn-primary">
+                        <img src="assets/icons/plus.svg" alt="Create" class="btn-icon">
+                        Create Quiz
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
+        quizzes.forEach(quiz => {
+            const actions = [
+                {
+                    name: 'play',
+                    class: 'play',
+                    icon: 'assets/icons/play.svg',
+                    title: 'Take Quiz'
+                }
+            ];
+            
+            const card = QuizUtils.renderQuizCard(quiz, actions);
+            
+            // Add click handler for play button
+            card.querySelector('[data-action="play"]').addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = `take-quiz.html?id=${quiz.id}`;
+            });
+            
+            // Add click handler for card
+            card.addEventListener('click', () => {
+                window.location.href = `take-quiz.html?id=${quiz.id}`;
+            });
+            
+            quizzesContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading quizzes:', error);
         quizzesContainer.innerHTML = `
-            <div class="empty-state" style="grid-column: 1 / -1;">
-                <img src="assets/characters/empty-character.svg" alt="No Quizzes" class="empty-character animated-float">
-                <h3 class="empty-title">No Quizzes Available</h3>
-                <p class="empty-text">Be the first to create a quiz!</p>
-                <a href="create-quiz.html" class="btn btn-primary">
-                    <img src="assets/icons/plus.svg" alt="Create" class="btn-icon">
-                    Create Quiz
-                </a>
+            <div class="error-state" style="grid-column: 1 / -1; text-align: center; padding: var(--spacing-xl); color: var(--danger);">
+                <h3>Error Loading Quizzes</h3>
+                <p>${error.message}</p>
+                <button onclick="loadQuizzes('all')" class="btn btn-primary">Retry</button>
             </div>
         `;
-        return;
     }
-    
-    quizzes.forEach(quiz => {
-        const actions = [
-            {
-                name: 'play',
-                class: 'play',
-                icon: 'assets/icons/play.svg',
-                title: 'Take Quiz'
-            }
-        ];
-        
-        const card = QuizUtils.renderQuizCard(quiz, actions);
-        
-        // Add click handler for play button
-        card.querySelector('[data-action="play"]').addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.location.href = `take-quiz.html?id=${quiz.id}`;
-        });
-        
-        // Add click handler for card
-        card.addEventListener('click', () => {
-            window.location.href = `take-quiz.html?id=${quiz.id}`;
-        });
-        
-        quizzesContainer.appendChild(card);
-    });
 }
 
 // Setup filter buttons

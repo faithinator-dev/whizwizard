@@ -740,7 +740,88 @@ const sampleQuizzes = [
     }
 ];
 
-// Function to load sample quizzes into database
+// Function to load sample quizzes into Firebase Firestore
+async function loadSampleQuizzesToFirebase() {
+    if (!window.isFirebaseReady || !window.isFirebaseReady()) {
+        console.error('Firebase not ready. Cannot load sample quizzes.');
+        return { success: false, message: 'Firebase not initialized' };
+    }
+
+    try {
+        console.log('📚 Loading sample quizzes to Firebase...');
+        let loadedCount = 0;
+
+        for (const quiz of sampleQuizzes) {
+            try {
+                // Check if quiz already exists
+                const quizDoc = await db.collection('quizzes').doc(quiz.id).get();
+                
+                if (!quizDoc.exists) {
+                    // Add timestamp and default values
+                    const quizData = {
+                        ...quiz,
+                        createdBy: 'system', // System-created quizzes
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        isPublic: true,
+                        timer: 30 // 30 seconds per question
+                    };
+                    
+                    await db.collection('quizzes').doc(quiz.id).set(quizData);
+                    loadedCount++;
+                    console.log(`✅ Loaded: ${quiz.title}`);
+                }
+            } catch (error) {
+                console.error(`Error loading quiz ${quiz.id}:`, error);
+            }
+        }
+
+        console.log(`🎉 Successfully loaded ${loadedCount} sample quizzes!`);
+        return { success: true, count: loadedCount };
+    } catch (error) {
+        console.error('Error loading sample quizzes:', error);
+        return { success: false, message: error.message };
+    }
+}
+
+// Auto-load sample quizzes on first visit (Firebase version)
+if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', async () => {
+        // Wait for Firebase to initialize
+        if (window.firebaseConfigured) {
+            // Check if we should load sample quizzes
+            const samplesLoaded = localStorage.getItem('sampleQuizzesLoaded');
+            
+            if (!samplesLoaded) {
+                // Wait a bit for Firebase to be fully ready
+                setTimeout(async () => {
+                    if (window.isFirebaseReady && window.isFirebaseReady()) {
+                        console.log('🎯 First visit detected - loading sample quizzes...');
+                        const result = await loadSampleQuizzesToFirebase();
+                        
+                        if (result.success) {
+                            localStorage.setItem('sampleQuizzesLoaded', 'true');
+                            console.log('✨ Sample quizzes are now available!');
+                        }
+                    }
+                }, 2000); // Wait 2 seconds for Firebase to be ready
+            }
+        }
+    });
+}
+
+// Function to manually reload sample quizzes (for testing)
+window.reloadSampleQuizzes = async function() {
+    localStorage.removeItem('sampleQuizzesLoaded');
+    const result = await loadSampleQuizzesToFirebase();
+    if (result.success) {
+        alert(`✅ Loaded ${result.count} sample quizzes!`);
+        window.location.reload();
+    } else {
+        alert(`❌ Error: ${result.message}`);
+    }
+};
+
+// Old localStorage version (keep for backward compatibility)
 function loadSampleQuizzes() {
     sampleQuizzes.forEach(quiz => {
         // Check if quiz already exists
@@ -752,7 +833,7 @@ function loadSampleQuizzes() {
     console.log('Sample quizzes loaded successfully!');
 }
 
-// Auto-load on page load if database is empty
+// Legacy auto-load (for pages not using Firebase)
 if (typeof Database !== 'undefined') {
     const allQuizzes = Database.getAllQuizzes();
     if (allQuizzes.length === 0) {
