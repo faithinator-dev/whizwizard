@@ -24,26 +24,37 @@ document.addEventListener('DOMContentLoaded', function() {
     setupNavigation();
 });
 
-// Load quiz
-function loadQuiz(quizId) {
-    currentQuiz = Database.getQuizById(quizId);
+// Load quiz from Firebase
+async function loadQuiz(quizId) {
+    // Show loading state
+    document.getElementById('quiz-title').textContent = 'Loading quiz...';
     
-    if (!currentQuiz) {
-        QuizUtils.showNotification('Quiz not found', 'error');
+    try {
+        currentQuiz = await FirebaseService.quizzes.getById(quizId);
+        
+        if (!currentQuiz) {
+            QuizUtils.showNotification('Quiz not found', 'error');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+            return;
+        }
+        
+        // Initialize
+        document.getElementById('quiz-title').textContent = currentQuiz.title;
+        document.getElementById('total-questions').textContent = currentQuiz.questions.length;
+        userAnswers = new Array(currentQuiz.questions.length).fill(null);
+        startTime = Date.now();
+        
+        // Load first question
+        loadQuestion(0);
+    } catch (error) {
+        console.error('Error loading quiz:', error);
+        QuizUtils.showNotification('Error loading quiz: ' + error.message, 'error');
         setTimeout(() => {
             window.location.href = 'index.html';
         }, 2000);
-        return;
     }
-    
-    // Initialize
-    document.getElementById('quiz-title').textContent = currentQuiz.title;
-    document.getElementById('total-questions').textContent = currentQuiz.questions.length;
-    userAnswers = new Array(currentQuiz.questions.length).fill(null);
-    startTime = Date.now();
-    
-    // Load first question
-    loadQuestion(0);
 }
 
 // Load question
@@ -58,6 +69,18 @@ function loadQuestion(index) {
     
     // Update question text
     document.getElementById('question-text').textContent = question.question;
+
+    // Handle Question Image
+    const imgContainer = document.getElementById('q-image-container');
+    const qImage = document.getElementById('q-image');
+    
+    if (question.image) {
+        qImage.src = question.image;
+        imgContainer.classList.remove('hidden');
+    } else {
+        imgContainer.classList.add('hidden');
+        qImage.src = '';
+    }
     
     // Render options
     const optionsContainer = document.getElementById('options-container');
@@ -180,7 +203,7 @@ function updateNavigationButtons() {
 }
 
 // Finish quiz
-function finishQuiz() {
+async function finishQuiz() {
     clearInterval(timerInterval);
     
     // Calculate results
@@ -197,12 +220,15 @@ function finishQuiz() {
     
     const totalQuestions = currentQuiz.questions.length;
     const score = QuizUtils.calculateScore(correctCount, totalQuestions);
+    const percentage = score;
     const timeTaken = Math.floor((Date.now() - startTime) / 1000);
     
-    // Save result
+    // Save result to Firebase
     const resultData = {
         quizId: currentQuiz.id,
+        quizTitle: currentQuiz.title,
         score: score,
+        percentage: percentage,
         correctAnswers: correctCount,
         wrongAnswers: wrongCount,
         totalQuestions: totalQuestions,
@@ -210,47 +236,61 @@ function finishQuiz() {
         answers: userAnswers
     };
     
-    Database.saveResult(resultData);
-    
-    // Calculate ranking for this quiz
-    const ranking = calculateQuizRanking(currentQuiz.id, score);
-    
-    // Show results with ranking
-    showResults(score, correctCount, wrongCount, timeTaken, ranking);
+    try {
+        await FirebaseService.results.save(resultData);
+        
+        // Calculate ranking for this quiz
+        const ranking = await calculateQuizRanking(currentQuiz.id, score, timeTaken);
+        
+        // Show results with ranking
+        showResults(score, correctCount, wrongCount, timeTaken, ranking);
+    } catch (error) {
+        console.error('Error saving result:', error);
+        QuizUtils.showNotification('Error saving result: ' + error.message, 'error');
+        // Still show results even if save failed
+        showResults(score, correctCount, wrongCount, timeTaken, { rank: 1, total: 1, topThree: [] });
+    }
 }
 
-// Calculate ranking for this specific quiz
-function calculateQuizRanking(quizId, userScore) {
-    const allResults = Database.getAllResults();
-    const quizResults = allResults.filter(r => r.quizId === quizId);
-    
-    // Sort by score (descending) and time (ascending for same scores)
-    quizResults.sort((a, b) => {
-        if (b.score !== a.score) {
-            return b.score - a.score;
-        }
-        return a.timeTaken - b.timeTaken;
-    });
-    
-    // Find current user's rank
-    const currentUser = Auth.getUser();
-    const userRank = quizResults.findIndex(r => 
-        r.userId === currentUser.id && r.score === userScore
-    ) + 1;
-    
-    return {
-        rank: userRank,
-        total: quizResults.length,
-        topThree: quizResults.slice(0, 3).map((r, idx) => {
-            const user = Database.getAllUsers().find(u => u.id === r.userId);
-            return {
-                rank: idx + 1,
-                name: user ? user.name : 'Unknown',
-                score: r.score,
-                timeTaken: r.timeTaken
-            };
-        })
-    };
+// Calculate ranking for this specific quiz from Firebase
+async function calculateQuizRanking(quizId, userScore, userTime) {
+    try {
+        const quizResults = await FirebaseService.results.getByQuiz(quizId);
+        
+        // Sort by score (descending) and time (ascending for same scores)
+        quizResults.sort((a, b) => {
+            if (b.score !== a.score) {
+                return b.score - a.score;
+            }
+            return a.timeTaken - b.timeTaken;
+        });
+        
+        // Find current user's rank
+        const currentUser = Auth.getUser();
+        const userRank = quizResults.findIndex(r => 
+            r.userId === currentUser.id && r.score === userScore && r.timeTaken === userTime
+        ) + 1;
+        
+        return {
+            rank: userRank > 0 ? userRank : quizResults.length + 1,
+            total: quizResults.length,
+            topThree: quizResults.slice(0, 3).map((r, idx) => {
+                return {
+                    rank: idx + 1,
+                    name: r.userName || 'Unknown',
+                    score: r.score,
+                    timeTaken: r.timeTaken
+                };
+            })
+        };
+    } catch (error) {
+        console.error('Error calculating ranking:', error);
+        return {
+            rank: 1,
+            total: 1,
+            topThree: []
+        };
+    }
 }
 
 // Show results

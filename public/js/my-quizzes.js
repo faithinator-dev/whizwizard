@@ -79,25 +79,26 @@ function logout() {
 }
 
 // Load user's quizzes
-function loadMyQuizzes() {
-    const currentUser = Auth.getAuthUser();
-    const quizzes = Database.getQuizzesByUser(currentUser.id);
-    const container = document.getElementById('my-quizzes-container');
-    const emptyState = document.getElementById('empty-state');
+async function loadMyQuizzes() {
+    try {
+        const currentUser = Auth.getAuthUser();
+        const quizzes = await FirebaseService.quizzes.getByUser(currentUser.id);
+        const container = document.getElementById('my-quizzes-container');
+        const emptyState = document.getElementById('empty-state');
     
-    container.innerHTML = '';
+        container.innerHTML = '';
     
-    if (quizzes.length === 0) {
-        container.classList.add('hidden');
-        emptyState.classList.remove('hidden');
-        return;
-    }
+        if (quizzes.length === 0) {
+            container.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            return;
+        }
     
-    container.classList.remove('hidden');
-    emptyState.classList.add('hidden');
+        container.classList.remove('hidden');
+        emptyState.classList.add('hidden');
     
-    quizzes.forEach(quiz => {
-        const actions = [
+        quizzes.forEach(quiz => {
+            const actions = [
             {
                 name: 'live',
                 class: 'live',
@@ -152,13 +153,17 @@ function loadMyQuizzes() {
             editQuiz(quiz.id);
         });
         
-        card.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
-            e.stopPropagation();
-            showDeleteModal(quiz.id);
-        });
+            card.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+                e.stopPropagation();
+                showDeleteModal(quiz.id);
+            });
         
-        container.appendChild(card);
-    });
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Error loading quizzes:', error);
+        QuizUtils.showNotification('Failed to load quizzes', 'error');
+    }
 }
 
 // Start live session
@@ -215,12 +220,13 @@ function hideDeleteModal() {
 
 // Delete quiz
 function deleteQuiz(quizId) {
-    const success = Database.deleteQuiz(quizId);
-    
-    if (success) {
+    FirebaseService.quizzes.delete(quizId)
+        .then(() => {
         QuizUtils.showNotification('Quiz deleted successfully', 'success');
         loadMyQuizzes();
-    } else {
+        })
+        .catch(error => {
+            console.error('Error deleting quiz:', error);
         QuizUtils.showNotification('Failed to delete quiz', 'error');
-    }
+        });
 }

@@ -76,8 +76,10 @@ function setupAvatarUpload() {
             const user = Auth.getUser();
             user.avatar = avatarUrl;
             
-            // Save to database
-            Database.updateUser(user.id, { avatar: avatarUrl });
+            // Save to backend
+            FirebaseService.auth.updateProfile({ avatar: avatarUrl }).catch(error => {
+                console.error('Error updating avatar:', error);
+            });
             localStorage.setItem('user', JSON.stringify(user));
             
             QuizUtils.showNotification('Profile picture updated!', 'success');
@@ -108,7 +110,7 @@ function setupProfileForm() {
         // Update name if changed
         if (name !== user.name) {
             user.name = name;
-            Database.updateUser(user.id, { name: name });
+            await FirebaseService.auth.updateProfile({ name });
         }
         
         // Handle password change
@@ -128,18 +130,7 @@ function setupProfileForm() {
                 return;
             }
             
-            // Verify current password
-            const storedUser = Database.getUserByEmail(user.email);
-            const isValidPassword = await User.comparePassword(currentPassword, storedUser.password);
-            
-            if (!isValidPassword) {
-                QuizUtils.showNotification('Current password is incorrect', 'error');
-                return;
-            }
-            
-            // Hash and save new password
-            const hashedPassword = await User.hashPassword(newPassword);
-            Database.updateUser(user.id, { password: hashedPassword });
+            await FirebaseService.auth.changePassword(currentPassword, newPassword);
             
             QuizUtils.showNotification('Password updated successfully!', 'success');
             
@@ -151,6 +142,7 @@ function setupProfileForm() {
         
         // Update localStorage
         localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('currentUser', JSON.stringify(user));
         
         QuizUtils.showNotification('Profile updated successfully!', 'success');
         

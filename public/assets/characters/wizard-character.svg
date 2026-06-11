@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="wizardBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6a11cb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2575fc;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Wizard Body/Robe -->
+  <path d="M 60 180 Q 100 120 140 180 L 150 190 L 50 190 Z" fill="url(#wizardBodyGrad)"/>
+  
+  <!-- Pointy Wizard Hat -->
+  <path d="M 70 50 L 100 5 L 130 50 Z" fill="#6a11cb">
+    <animateTransform attributeName="transform" type="rotate" from="-5 100 50" to="5 100 50" dur="2s" repeatCount="indefinite" />
+  </path>
+  <path d="M 60 55 Q 100 45 140 55" stroke="#6a11cb" stroke-width="8" fill="none" stroke-linecap="round"/>
+  
+  <!-- Head (Matching your style) -->
+  <circle cx="100" cy="80" r="35" fill="#00d4ff"/>
+  
+  <!-- Thinking Eyes -->
+  <circle cx="90" cy="75" r="5" fill="white"/>
+  <circle cx="110" cy="75" r="5" fill="white"/>
+  <path d="M 85 70 L 95 72" stroke="#0a1929" stroke-width="2" fill="none"/>
+  <path d="M 105 72 L 115 70" stroke="#0a1929" stroke-width="2" fill="none"/>
+  
+  <!-- Magic Wand -->
+  <rect x="145" y="100" width="4" height="60" fill="#4a3000" transform="rotate(-30 145 100)"/>
+  <circle cx="175" cy="85" r="8" fill="#ffd700">
+    <animate attributeName="r" values="8;12;8" dur="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Star on Wand -->
+  <path d="M 175 75 L 177 82 L 184 82 L 178 86 L 180 93 L 175 89 L 170 93 L 172 86 L 166 82 L 173 82 Z" fill="white">
+     <animateTransform attributeName="transform" type="rotate" from="0 175 85" to="360 175 85" dur="4s" repeatCount="indefinite" />
+  </path>
+</svg>

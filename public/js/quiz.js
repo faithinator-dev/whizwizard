@@ -113,15 +113,17 @@ const QuizUtils = {
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             z-index: 10000;
             font-weight: 600;
-            animation: slideInRight 0.3s ease-out;
+            animation: fadeInRight 0.3s ease-out;
         `;
 
         document.body.appendChild(notification);
 
         setTimeout(() => {
-            notification.style.animation = 'fadeOut 0.3s ease-out';
+            notification.style.animation = 'scaleOut 0.3s ease-out forwards';
             setTimeout(() => {
-                document.body.removeChild(notification);
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
             }, 300);
         }, 3000);
     },

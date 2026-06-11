@@ -75,6 +75,27 @@
                 <p class="page-subtitle">Fill in the details to create your quiz</p>
             </div>
 
+            <!-- AI Magic Generator Section -->
+            <div class="form-section ai-magic-section animated-glow" style="border: 2px solid #6a11cb; background: rgba(106, 17, 203, 0.05);">
+                <h3 class="form-section-title" style="color: #00d4ff;">
+                    <img src="assets/characters/wizard-character.svg" alt="AI Wizard" class="section-icon" style="height: 40px; margin-top: -10px;">
+                    AI Sorcerer: Magic Quiz Generator
+                </h3>
+                <p style="margin-bottom: 1rem; font-size: 0.9rem; opacity: 0.8;">Enter a topic and let the AI Wizard cast a spell to generate questions for you instantly!</p>
+                <div class="form-row" style="align-items: flex-end;">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">Quiz Topic</label>
+                        <input type="text" id="ai-topic" class="form-input" placeholder="e.g. Ancient Egypt, JavaScript Basics, Space Exploration">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <button type="button" class="btn btn-primary btn-full" id="magic-generate-btn" style="background: linear-gradient(135deg, #6a11cb, #2575fc);">
+                            <img src="assets/icons/save.svg" alt="Magic" class="btn-icon" style="filter: hue-rotate(90deg);">
+                            Magic Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <form id="create-quiz-form" class="quiz-form">
                 <div class="form-section">
                     <h3 class="form-section-title">
@@ -133,13 +154,67 @@
                         <img src="assets/icons/close.svg" alt="Cancel" class="btn-icon">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="submit-quiz-btn">
                         <img src="assets/icons/save.svg" alt="Save" class="btn-icon">
                         Create Quiz
                     </button>
                 </div>
             </form>
         </div>
+
+        <template id="question-card-template">
+            <div class="form-group question-card animated-scale" style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid #00d4ff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="margin: 0;">Question <span class="question-number">1</span></h4>
+                    <button type="button" class="btn btn-small btn-danger remove-question-btn">
+                        <img src="assets/icons/trash.svg" alt="Delete" class="btn-icon">
+                        Remove
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Question Text</label>
+                    <textarea class="form-input question-text" rows="2" placeholder="Enter your question" required></textarea>
+                </div>
+
+                <!-- Image Upload for Question -->
+                <div class="form-group">
+                    <label class="form-label">Question Image (Optional)</label>
+                    <div class="image-upload-area" style="border: 2px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <input type="file" class="q-image-input" accept="image/*" style="display: none;">
+                        <div class="image-preview hidden" style="margin-bottom: 1rem;">
+                            <img src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+                            <br>
+                            <button type="button" class="btn btn-small btn-danger remove-img-btn" style="margin-top: 0.5rem;">Remove Image</button>
+                        </div>
+                        <button type="button" class="btn btn-secondary upload-trigger-btn">
+                            <img src="assets/icons/save.svg" alt="Upload" class="btn-icon" style="filter: invert(1);">
+                            Choose Image
+                        </button>
+                        <input type="hidden" class="q-image-url">
+                    </div>
+                </div>
+
+                <div class="options-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="option-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="radio" name="correct-0" value="0" class="option-radio" required>
+                        <input type="text" class="form-input option-text" placeholder="Option 1" required>
+                    </div>
+                    <div class="option-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="radio" name="correct-0" value="1" class="option-radio">
+                        <input type="text" class="form-input option-text" placeholder="Option 2" required>
+                    </div>
+                    <div class="option-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="radio" name="correct-0" value="2" class="option-radio">
+                        <input type="text" class="form-input option-text" placeholder="Option 3" required>
+                    </div>
+                    <div class="option-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="radio" name="correct-0" value="3" class="option-radio">
+                        <input type="text" class="form-input option-text" placeholder="Option 4" required>
+                    </div>
+                </div>
+            </div>
+        </template>
 
         <div class="character-helper">
             <img src="assets/characters/create-character.svg" alt="Helper" class="helper-img animated-bounce">
